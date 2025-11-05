@@ -1,0 +1,266 @@
+import React, { useState } from "react";
+import { base44 } from "@/api/base44Client";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Sparkles, 
+  Loader2, 
+  ExternalLink,
+  Video,
+  BookOpen,
+  Lightbulb,
+  Microscope
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
+export default function ResourceRecommender({ topic, outcomes = [], studentLevel = "intermediate" }) {
+  const [resources, setResources] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const generateResources = async () => {
+    setIsLoading(true);
+    
+    try {
+      const prompt = `You are an expert NSW Science educator. Generate personalized learning resources for a Year 7-8 student.
+
+Topic: ${topic}
+NESA Outcomes: ${outcomes.join(", ")}
+Student Level: ${studentLevel}
+
+Generate a comprehensive learning resource guide with:
+1. 3 recommended YouTube videos (use real Australian science education channels like "Science with Skilldog", "Khan Academy", or general science channels)
+2. 2 interactive simulations or websites (like PhET, LabXchange, CSIRO Education)
+3. 2 hands-on activities students can try at home
+4. 3 key concepts to focus on
+5. Real-world Australian connections
+
+Return ONLY valid JSON in this format:
+{
+  "videos": [
+    {"title": "Video title", "description": "What they'll learn", "channel": "Channel name"}
+  ],
+  "simulations": [
+    {"title": "Activity name", "description": "What to do", "url": "phetsims.com or similar"}
+  ],
+  "activities": [
+    {"title": "Activity name", "description": "Step-by-step instructions", "materials": "What they need"}
+  ],
+  "key_concepts": ["Concept 1", "Concept 2", "Concept 3"],
+  "australian_connection": "How this relates to Australia"
+}`;
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            videos: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  channel: { type: "string" }
+                }
+              }
+            },
+            simulations: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  url: { type: "string" }
+                }
+              }
+            },
+            activities: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  materials: { type: "string" }
+                }
+              }
+            },
+            key_concepts: {
+              type: "array",
+              items: { type: "string" }
+            },
+            australian_connection: { type: "string" }
+          }
+        }
+      });
+
+      setResources(response);
+    } catch (error) {
+      console.error("Resource generation error:", error);
+    }
+    
+    setIsLoading(false);
+  };
+
+  return (
+    <div className="space-y-4">
+      {!resources && !isLoading && (
+        <Card className="border-2 border-dashed border-purple-300 bg-purple-50/50">
+          <CardContent className="p-6 text-center">
+            <Sparkles className="w-12 h-12 mx-auto mb-3 text-purple-600" />
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Get AI-Powered Learning Resources
+            </h3>
+            <p className="text-gray-600 mb-4">
+              Let AI recommend personalized videos, activities, and resources for this topic
+            </p>
+            <Button 
+              onClick={generateResources}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Generate Resources
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {isLoading && (
+        <Card>
+          <CardContent className="p-8 text-center">
+            <Loader2 className="w-12 h-12 mx-auto mb-4 animate-spin text-purple-600" />
+            <p className="text-gray-600">Generating personalized resources...</p>
+          </CardContent>
+        </Card>
+      )}
+
+      <AnimatePresence>
+        {resources && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="space-y-4"
+          >
+            {/* Key Concepts */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-purple-50 to-blue-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Lightbulb className="w-5 h-5 text-purple-600" />
+                  Key Concepts to Focus On
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {resources.key_concepts?.map((concept, index) => (
+                    <Badge key={index} variant="secondary" className="bg-purple-100 text-purple-700">
+                      {concept}
+                    </Badge>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Videos */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Video className="w-5 h-5 text-red-600" />
+                  Recommended Videos
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {resources.videos?.map((video, index) => (
+                  <div key={index} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 mb-1">{video.title}</h4>
+                        <p className="text-sm text-gray-600 mb-2">{video.description}</p>
+                        <Badge variant="outline" className="text-xs">
+                          {video.channel}
+                        </Badge>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Interactive Simulations */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Microscope className="w-5 h-5 text-blue-600" />
+                  Interactive Simulations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {resources.simulations?.map((sim, index) => (
+                  <div key={index} className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-gray-900 mb-1">{sim.title}</h4>
+                        <p className="text-sm text-gray-600 mb-2">{sim.description}</p>
+                        <p className="text-xs text-blue-600">{sim.url}</p>
+                      </div>
+                      <ExternalLink className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Hands-on Activities */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-green-600" />
+                  Try at Home
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {resources.activities?.map((activity, index) => (
+                  <div key={index} className="p-4 bg-green-50 rounded-lg">
+                    <h4 className="font-semibold text-gray-900 mb-2">{activity.title}</h4>
+                    <p className="text-sm text-gray-600 mb-2">{activity.description}</p>
+                    <div className="mt-2 p-2 bg-white rounded border border-green-200">
+                      <p className="text-xs font-medium text-gray-700 mb-1">Materials needed:</p>
+                      <p className="text-xs text-gray-600">{activity.materials}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Australian Connection */}
+            {resources.australian_connection && (
+              <Card className="border-none shadow-lg bg-gradient-to-br from-amber-50 to-orange-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <span className="text-2xl">🇦🇺</span>
+                    Australian Connection
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-700">{resources.australian_connection}</p>
+                </CardContent>
+              </Card>
+            )}
+
+            <Button 
+              onClick={generateResources}
+              variant="outline"
+              className="w-full"
+            >
+              <Sparkles className="w-4 h-4 mr-2" />
+              Regenerate Resources
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

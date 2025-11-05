@@ -4,9 +4,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, Sparkles, Loader2, BookOpen } from "lucide-react";
+import { Send, Sparkles, Loader2, BookOpen, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
+import ResourceRecommender from "../components/learning/ResourceRecommender";
 
 const NESA_CONTEXT = `You are an expert NSW Science teacher for Years 7-8 students. You teach following the NESA curriculum.
 
@@ -31,6 +32,8 @@ export default function Chat() {
   const [sessionId, setSessionId] = useState(null);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [showResources, setShowResources] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState(null);
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
@@ -63,8 +66,8 @@ export default function Chat() {
       message_count: 0
     });
     setSessionId(session.id);
+    setCurrentTopic(topicParam);
 
-    // Send initial greeting
     if (topicParam) {
       await sendInitialMessage(session.id, topicParam);
     }
@@ -98,25 +101,21 @@ Be friendly and encouraging!`,
     mutationFn: async (message) => {
       setIsLoading(true);
 
-      // Save user message
       await base44.entities.ChatMessage.create({
         session_id: sessionId,
         role: "user",
         content: message
       });
 
-      // Get conversation history
       const history = await base44.entities.ChatMessage.filter(
         { session_id: sessionId }, 
         'created_date'
       );
 
-      // Build conversation context
       const conversationHistory = history.slice(-6).map(m => 
         `${m.role === 'user' ? 'Student' : 'Teacher'}: ${m.content}`
       ).join('\n\n');
 
-      // Generate AI response
       const response = await base44.integrations.Core.InvokeLLM({
         prompt: `${NESA_CONTEXT}
 
@@ -136,14 +135,12 @@ Keep response concise (3-5 paragraphs max).`,
         add_context_from_internet: false
       });
 
-      // Save AI response
       await base44.entities.ChatMessage.create({
         session_id: sessionId,
         role: "assistant",
         content: response
       });
 
-      // Update session
       await base44.entities.ChatSession.update(sessionId, {
         last_message: message.slice(0, 100),
         message_count: history.length + 2
@@ -182,18 +179,48 @@ Keep response concise (3-5 paragraphs max).`,
     );
   }
 
+  if (showResources && currentTopic) {
+    return (
+      <div className="p-6 md:p-8">
+        <div className="max-w-4xl mx-auto">
+          <Button variant="ghost" onClick={() => setShowResources(false)} className="mb-6">
+            Back to Chat
+          </Button>
+          <ResourceRecommender 
+            topic={currentTopic}
+            outcomes={[]}
+            studentLevel="intermediate"
+          />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
       {/* Header */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-purple-100 p-4 shadow-sm">
-        <div className="max-w-4xl mx-auto flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+        <div className="max-w-4xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <h1 className="font-bold text-gray-900">AI Science Tutor</h1>
+              <p className="text-sm text-gray-600">Ask me anything about science!</p>
+            </div>
           </div>
-          <div>
-            <h1 className="font-bold text-gray-900">AI Science Tutor</h1>
-            <p className="text-sm text-gray-600">Ask me anything about science!</p>
-          </div>
+          {currentTopic && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowResources(true)}
+              className="hidden md:flex"
+            >
+              <Lightbulb className="w-4 h-4 mr-2" />
+              Get Resources
+            </Button>
+          )}
         </div>
       </div>
 
@@ -250,30 +277,43 @@ Keep response concise (3-5 paragraphs max).`,
 
       {/* Input */}
       <div className="bg-white/80 backdrop-blur-sm border-t border-purple-100 p-4">
-        <div className="max-w-4xl mx-auto flex gap-2">
-          <Input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Ask me anything about science..."
-            className="flex-1 border-purple-200 focus:border-purple-400"
-            disabled={isLoading}
-          />
-          <Button 
-            onClick={handleSend}
-            disabled={!input.trim() || isLoading}
-            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-          >
-            {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
-            ) : (
-              <Send className="w-4 h-4" />
-            )}
-          </Button>
+        <div className="max-w-4xl mx-auto">
+          {currentTopic && (
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => setShowResources(true)}
+              className="mb-3 md:hidden w-full"
+            >
+              <Lightbulb className="w-4 h-4 mr-2" />
+              Get Learning Resources
+            </Button>
+          )}
+          <div className="flex gap-2">
+            <Input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyPress={handleKeyPress}
+              placeholder="Ask me anything about science..."
+              className="flex-1 border-purple-200 focus:border-purple-400"
+              disabled={isLoading}
+            />
+            <Button 
+              onClick={handleSend}
+              disabled={!input.trim() || isLoading}
+              className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+            >
+              {isLoading ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Send className="w-4 h-4" />
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500 text-center mt-2">
+            Press Enter to send • Shift+Enter for new line
+          </p>
         </div>
-        <p className="text-xs text-gray-500 text-center mt-2">
-          Press Enter to send • Shift+Enter for new line
-        </p>
       </div>
     </div>
   );

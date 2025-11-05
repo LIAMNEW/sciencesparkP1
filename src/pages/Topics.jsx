@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,9 +14,11 @@ import {
   Droplets,
   Heart,
   ArrowRight,
-  Sparkles
+  Sparkles,
+  X
 } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import ResourceRecommender from "../components/learning/ResourceRecommender";
 
 const TOPICS = [
   {
@@ -94,11 +96,52 @@ const TOPICS = [
 ];
 
 export default function Topics() {
-  const [selectedDifficulty, setSelectedDifficulty] = React.useState("all");
+  const [selectedDifficulty, setSelectedDifficulty] = useState("all");
+  const [selectedTopic, setSelectedTopic] = useState(null);
 
   const filteredTopics = selectedDifficulty === "all" 
     ? TOPICS 
     : TOPICS.filter(t => t.difficulty.toLowerCase() === selectedDifficulty);
+
+  if (selectedTopic) {
+    return (
+      <div className="p-6 md:p-8 max-w-4xl mx-auto">
+        <div className="mb-6">
+          <Button variant="ghost" onClick={() => setSelectedTopic(null)}>
+            <X className="w-4 h-4 mr-2" />
+            Close
+          </Button>
+        </div>
+
+        <div className="mb-6">
+          <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedTopic.color} flex items-center justify-center mb-4 shadow-lg`}>
+            <selectedTopic.icon className="w-8 h-8 text-white" />
+          </div>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedTopic.title}</h1>
+          <p className="text-lg text-gray-600 mb-4">{selectedTopic.description}</p>
+          <div className="flex gap-2 mb-6">
+            <Badge variant="secondary">{selectedTopic.difficulty}</Badge>
+            {selectedTopic.outcomes.map(outcome => (
+              <Badge key={outcome} variant="outline">{outcome}</Badge>
+            ))}
+          </div>
+          <div className="flex gap-2 mb-6">
+            <Link to={createPageUrl(`Chat?topic=${selectedTopic.id}`)}>
+              <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
+                Ask AI Tutor
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        <ResourceRecommender 
+          topic={selectedTopic.title}
+          outcomes={selectedTopic.outcomes}
+          studentLevel={selectedTopic.difficulty.toLowerCase()}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">
@@ -172,9 +215,17 @@ export default function Topics() {
                 </div>
 
                 <div className="flex gap-2">
+                  <Button 
+                    onClick={() => setSelectedTopic(topic)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    <Sparkles className="w-4 h-4 mr-2" />
+                    Resources
+                  </Button>
                   <Link to={createPageUrl(`Chat?topic=${topic.id}`)} className="flex-1">
                     <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
-                      Learn Now
+                      Learn
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
                   </Link>
