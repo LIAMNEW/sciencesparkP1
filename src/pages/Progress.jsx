@@ -3,7 +3,7 @@ import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Progress as ProgressBar } from "@/components/ui/progress";
 import { Trophy, TrendingUp, Target, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -144,7 +144,7 @@ export default function Progress() {
                     {outcome.progress}%
                   </span>
                 </div>
-                <Progress value={outcome.progress} className="h-2" />
+                <ProgressBar value={outcome.progress} className="h-2" />
                 <p className="text-xs text-gray-500">
                   {outcome.attempts > 0 
                     ? `${outcome.attempts} activities completed`
