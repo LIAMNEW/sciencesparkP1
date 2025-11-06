@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -172,20 +173,31 @@ Return ONLY valid JSON in this format:
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {resources.videos?.map((video, index) => (
-                  <div key={index} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-1">{video.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{video.description}</p>
-                        <Badge variant="outline" className="text-xs">
-                          {video.channel}
-                        </Badge>
+                {resources.videos?.map((video, index) => {
+                  const searchQuery = encodeURIComponent(`${video.title} ${video.channel}`);
+                  const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
+                  
+                  return (
+                    <a 
+                      key={index} 
+                      href={youtubeSearchUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-2 border-transparent hover:border-red-200"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1">{video.title}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{video.description}</p>
+                          <Badge variant="outline" className="text-xs">
+                            {video.channel}
+                          </Badge>
+                        </div>
+                        <ExternalLink className="w-5 h-5 text-red-600 flex-shrink-0" />
                       </div>
-                      <ExternalLink className="w-4 h-4 text-gray-400 flex-shrink-0" />
-                    </div>
-                  </div>
-                ))}
+                    </a>
+                  );
+                })}
               </CardContent>
             </Card>
 
@@ -198,18 +210,32 @@ Return ONLY valid JSON in this format:
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {resources.simulations?.map((sim, index) => (
-                  <div key={index} className="p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1">
-                        <h4 className="font-semibold text-gray-900 mb-1">{sim.title}</h4>
-                        <p className="text-sm text-gray-600 mb-2">{sim.description}</p>
-                        <p className="text-xs text-blue-600">{sim.url}</p>
+                {resources.simulations?.map((sim, index) => {
+                  // Ensure URL has proper protocol
+                  let url = sim.url;
+                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                  }
+                  
+                  return (
+                    <a 
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border-2 border-transparent hover:border-blue-200"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1">{sim.title}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{sim.description}</p>
+                          <p className="text-xs text-blue-600 font-medium">{sim.url}</p>
+                        </div>
+                        <ExternalLink className="w-5 h-5 text-blue-600 flex-shrink-0" />
                       </div>
-                      <ExternalLink className="w-4 h-4 text-blue-600 flex-shrink-0" />
-                    </div>
-                  </div>
-                ))}
+                    </a>
+                  );
+                })}
               </CardContent>
             </Card>
 
