@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -51,6 +52,7 @@ export default function Chat() {
   const [isLoading, setIsLoading] = useState(false);
   const [showResources, setShowResources] = useState(false);
   const [currentTopic, setCurrentTopic] = useState(null);
+  const [error, setError] = useState(null); // Added error state
   const messagesEndRef = useRef(null);
   const queryClient = useQueryClient();
 
@@ -75,24 +77,31 @@ export default function Chat() {
   });
 
   const createNewSession = async () => {
-    const session = await base44.entities.ChatSession.create({
-      student_id: user.id,
-      topic: topicParam || "general",
-      title: topicParam ? `Learning about ${topicParam}` : "New Conversation",
-      last_message: "Started new conversation",
-      message_count: 0
-    });
-    setSessionId(session.id);
-    setCurrentTopic(topicParam);
+    try {
+      const session = await base44.entities.ChatSession.create({
+        student_id: user.id,
+        topic: topicParam || "general",
+        title: topicParam ? `Learning about ${topicParam}` : "New Conversation",
+        last_message: "Started new conversation",
+        message_count: 0
+      });
+      setSessionId(session.id);
+      setCurrentTopic(topicParam);
+      setError(null); // Clear any previous errors
 
-    if (topicParam) {
-      await sendInitialMessage(session.id, topicParam);
+      if (topicParam) {
+        await sendInitialMessage(session.id, topicParam);
+      }
+    } catch (err) {
+      console.error("Session creation error:", err);
+      setError("Failed to start chat session. Please refresh the page.");
     }
   };
 
   const sendInitialMessage = async (sessionId, topic) => {
-    const greeting = await base44.integrations.Core.InvokeLLM({
-      prompt: `${NESA_CONTEXT}
+    try {
+      const greeting = await base44.integrations.Core.InvokeLLM({
+        prompt: `${NESA_CONTEXT}
 
 A student just started learning about: ${topic}
 
@@ -102,39 +111,46 @@ Write a warm, engaging greeting (2-3 sentences) to:
 3. Ask what specific aspect they'd like to explore first
 
 Be friendly, encouraging and mention any relevant real-world Australian connections!`,
-      add_context_from_internet: false
-    });
+        add_context_from_internet: false
+      });
 
-    await base44.entities.ChatMessage.create({
-      session_id: sessionId,
-      role: "assistant",
-      content: greeting
-    });
+      await base44.entities.ChatMessage.create({
+        session_id: sessionId,
+        role: "assistant",
+        content: greeting
+      });
 
-    queryClient.invalidateQueries(['messages', sessionId]);
+      queryClient.invalidateQueries(['messages', sessionId]);
+    } catch (err) {
+      console.error("Initial message error:", err);
+      // Not setting an error message for the user here as it's less critical
+      // and the chat might still be functional.
+    }
   };
 
   const sendMessageMutation = useMutation({
     mutationFn: async (message) => {
       setIsLoading(true);
+      setError(null); // Clear previous errors when sending a new message
 
-      await base44.entities.ChatMessage.create({
-        session_id: sessionId,
-        role: "user",
-        content: message
-      });
+      try {
+        await base44.entities.ChatMessage.create({
+          session_id: sessionId,
+          role: "user",
+          content: message
+        });
 
-      const history = await base44.entities.ChatMessage.filter(
-        { session_id: sessionId }, 
-        'created_date'
-      );
+        const history = await base44.entities.ChatMessage.filter(
+          { session_id: sessionId }, 
+          'created_date'
+        );
 
-      const conversationHistory = history.slice(-6).map(m => 
-        `${m.role === 'user' ? 'Student' : 'Teacher'}: ${m.content}`
-      ).join('\n\n');
+        const conversationHistory = history.slice(-6).map(m => 
+          `${m.role === 'user' ? 'Student' : 'Teacher'}: ${m.content}`
+        ).join('\n\n');
 
-      const response = await base44.integrations.Core.InvokeLLM({
-        prompt: `${NESA_CONTEXT}
+        const response = await base44.integrations.Core.InvokeLLM({
+          prompt: `${NESA_CONTEXT}
 
 Conversation so far:
 ${conversationHistory}
@@ -150,26 +166,36 @@ Provide a helpful, educational response that:
 - Mentions relevant NESA outcome codes if directly applicable
 
 Keep response concise (3-5 paragraphs max). Be warm and encouraging.`,
-        add_context_from_internet: false
-      });
+          add_context_from_internet: false
+        });
 
-      await base44.entities.ChatMessage.create({
-        session_id: sessionId,
-        role: "assistant",
-        content: response
-      });
+        await base44.entities.ChatMessage.create({
+          session_id: sessionId,
+          role: "assistant",
+          content: response
+        });
 
-      await base44.entities.ChatSession.update(sessionId, {
-        last_message: message.slice(0, 100),
-        message_count: history.length + 2
-      });
+        await base44.entities.ChatSession.update(sessionId, {
+          last_message: message.slice(0, 100),
+          message_count: history.length + 2
+        });
 
-      setIsLoading(false);
-      return response;
+        setIsLoading(false);
+        return response;
+      } catch (err) {
+        setIsLoading(false);
+        setError("Failed to send message. Please try again.");
+        console.error("Send message error:", err);
+        throw err; // Re-throw the error so react-query can handle it if needed
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['messages', sessionId]);
       setInput("");
+      setError(null); // Clear error on successful send
+    },
+    onError: () => {
+      setIsLoading(false); // Ensure loading state is reset on error
     }
   });
 
@@ -245,6 +271,19 @@ Keep response concise (3-5 paragraphs max). Be warm and encouraging.`,
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-4xl mx-auto space-y-4">
+          {error && ( // Display error message here
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700 text-sm flex items-center gap-2"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              </svg>
+              {error}
+            </motion.div>
+          )}
+          
           <AnimatePresence>
             {messages.map((message) => (
               <motion.div
