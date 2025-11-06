@@ -1,6 +1,7 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+// import { useMutation, useQueryClient } from "@tanstack/react-query"; // Removed as useMutation is no longer used
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,54 +10,87 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Loader2, X, Sparkles } from "lucide-react";
 
 const TOPICS = [
-  "cells", "body-systems", "mixtures", "atoms", 
-  "forces", "energy", "rock-cycle", "universe"
+  // Stage 4
+  { value: "observing-universe", label: "Observing the Universe", stage: 4 },
+  { value: "forces", label: "Forces", stage: 4 },
+  { value: "cells-classification", label: "Cells and Classification", stage: 4 },
+  { value: "solutions-mixtures", label: "Solutions and Mixtures", stage: 4 },
+  { value: "living-systems", label: "Living Systems", stage: 4 },
+  { value: "periodic-table", label: "Periodic Table & Atomic Structure", stage: 4 },
+  { value: "change", label: "Change", stage: 4 },
+  { value: "data-science-1", label: "Data Science 1", stage: 4 },
+  // Stage 5
+  { value: "energy", label: "Energy", stage: 5 },
+  { value: "disease", label: "Disease", stage: 5 },
+  { value: "materials", label: "Materials", stage: 5 },
+  { value: "environmental-sustainability", label: "Environmental Sustainability", stage: 5 },
+  { value: "genetics", label: "Genetics & Evolutionary Change", stage: 5 },
+  { value: "reactions", label: "Reactions", stage: 5 },
+  { value: "waves-motion", label: "Waves and Motion", stage: 5 },
+  { value: "data-science-2", label: "Data Science 2", stage: 5 }
 ];
 
-const TOPIC_OUTCOMES = {
-  "cells": ["SC4-LW-01", "SC4-WS-01", "SC4-WS-06"],
-  "body-systems": ["SC4-LW-02", "SC4-WS-03", "SC4-WS-04"],
-  "mixtures": ["SC4-CW-01", "SC4-WS-02", "SC4-WS-04"],
-  "atoms": ["SC4-CW-02", "SC4-WS-01", "SC4-WS-07"],
-  "forces": ["SC4-FOR-01", "SC4-WS-03", "SC4-WS-05"],
-  "energy": ["SC4-MOT-01", "SC4-WS-04", "SC4-WS-06"],
-  "rock-cycle": ["SC4-GEA-01", "SC4-WS-02", "SC4-WS-04"],
-  "universe": ["SC4-OUT-01", "SC4-WS-07"]
-};
+// TOPIC_OUTCOMES is removed as per the outline. Outcomes are now dynamically generated.
 
-export default function QuizCreator({ onClose }) {
+export default function QuizCreator({ onQuizCreated, onCancel }) {
   const [topic, setTopic] = useState("");
   const [difficulty, setDifficulty] = useState("intermediate");
-  const [numQuestions, setNumQuestions] = useState(5);
+  const [questionCount, setQuestionCount] = useState(5); // Renamed from numQuestions
   const [isGenerating, setIsGenerating] = useState(false);
-  const queryClient = useQueryClient();
+  const [error, setError] = useState(null); // Added error state
+  // const queryClient = useQueryClient(); // Removed as useMutation is no longer used
 
-  const generateQuizMutation = useMutation({
-    mutationFn: async () => {
-      setIsGenerating(true);
+  const generateQuiz = async () => {
+    setIsGenerating(true);
+    setError(null); // Clear previous errors
 
-      const prompt = `Generate a ${difficulty} level science quiz for NSW Year 7-8 students on the topic: ${topic}.
+    const selectedTopicObj = TOPICS.find(t => t.value === topic);
+    if (!selectedTopicObj) {
+      setError("Please select a valid topic.");
+      setIsGenerating(false);
+      return;
+    }
 
-Create ${numQuestions} multiple choice questions that:
-- Test understanding aligned with NESA curriculum
-- Have 4 options each
-- Include clear explanations
-- Use age-appropriate language
-- Include Australian context where relevant
+    const stageYears = selectedTopicObj.stage === 4 ? "7-8" : "9-10";
+    const stageInfo = `Stage ${selectedTopicObj.stage} (Years ${stageYears})`;
+
+    const prompt = `You are creating a science quiz for NSW students following the NSW Science 7-10 (2023) syllabus.
+
+Topic: ${selectedTopicObj.label}
+Stage: ${stageInfo}
+Difficulty: ${difficulty}
+Number of questions: ${questionCount}
+
+Create a quiz with ${questionCount} multiple-choice questions (4 options each, only one correct).
+
+Requirements:
+- Align questions with NSW Science 7-10 (2023) syllabus content
+- Use age-appropriate language for ${stageInfo}
+- Include Australian context and examples where relevant
+- Cover different aspects of the topic (concepts, applications, analysis)
+- Provide clear, educational explanations
+- For Stage 4: Focus on foundational understanding, observation, and basic scientific thinking
+- For Stage 5: Include more complex concepts, analysis, and real-world applications
+
+Difficulty guidelines:
+- Beginner: Basic recall and understanding
+- Intermediate: Application and analysis
+- Advanced: Synthesis, evaluation, and complex problem-solving
 
 Return ONLY valid JSON in this exact format:
 {
-  "title": "Quiz title here",
+  "title": "Quiz title (engaging, specific to topic and difficulty)",
   "questions": [
     {
-      "question": "Question text?",
+      "question": "Question text",
       "options": ["Option A", "Option B", "Option C", "Option D"],
       "correct_answer": 0,
-      "explanation": "Why this answer is correct"
+      "explanation": "Why this answer is correct and how it relates to the syllabus"
     }
   ]
 }`;
 
+    try {
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
         response_json_schema: {
@@ -69,7 +103,10 @@ Return ONLY valid JSON in this exact format:
                 type: "object",
                 properties: {
                   question: { type: "string" },
-                  options: { type: "array", items: { type: "string" } },
+                  options: {
+                    type: "array",
+                    items: { type: "string" }
+                  },
                   correct_answer: { type: "number" },
                   explanation: { type: "string" }
                 }
@@ -79,104 +116,116 @@ Return ONLY valid JSON in this exact format:
         }
       });
 
+      // Basic validation for the LLM response structure
+      if (!response || !response.title || !Array.isArray(response.questions) || response.questions.length === 0) {
+        throw new Error("Invalid response structure from LLM.");
+      }
+
       const quiz = await base44.entities.Quiz.create({
         topic,
         title: response.title,
         difficulty,
-        nesa_outcomes: TOPIC_OUTCOMES[topic] || [],
+        // NESA outcomes are now simplified to a generic working scientifically outcome based on stage
+        nesa_outcomes: [`SC${selectedTopicObj.stage}-WS-01`],
         questions: response.questions
       });
 
-      setIsGenerating(false);
-      return quiz;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries(['quizzes']);
-      onClose();
-    },
-    onError: (error) => {
-      console.error("Quiz generation error:", error);
+      // queryClient.invalidateQueries(['quizzes']); // Removed as useMutation is no longer used
+      onQuizCreated(quiz); // Callback for successful quiz creation
+    } catch (err) {
+      console.error("Quiz generation error:", err);
+      setError("Failed to generate quiz. Please try again. " + (err.message || ""));
+    } finally {
       setIsGenerating(false);
     }
-  });
+  };
 
   return (
-    <div className="p-6 md:p-8 max-w-2xl mx-auto">
-      <Card className="border-none shadow-xl">
-        <CardHeader>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
-                <Sparkles className="w-5 h-5 text-white" />
-              </div>
-              <CardTitle>Create AI Quiz</CardTitle>
+    <Card className="border-none shadow-xl">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <Button variant="ghost" size="icon" onClick={onClose}>
-              <X className="w-4 h-4" />
-            </Button>
+            <CardTitle>Create AI Quiz</CardTitle>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          <div>
-            <Label>Topic</Label>
-            <Select value={topic} onValueChange={setTopic}>
-              <SelectTrigger>
-                <SelectValue placeholder="Select a topic" />
-              </SelectTrigger>
-              <SelectContent>
-                {TOPICS.map(t => (
-                  <SelectItem key={t} value={t}>
-                    {t.replace("-", " ").replace(/\b\w/g, l => l.toUpperCase())}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>Difficulty</Label>
-            <Select value={difficulty} onValueChange={setDifficulty}>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="beginner">Beginner</SelectItem>
-                <SelectItem value="intermediate">Intermediate</SelectItem>
-                <SelectItem value="advanced">Advanced</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          <div>
-            <Label>Number of Questions</Label>
-            <Input
-              type="number"
-              min="3"
-              max="10"
-              value={numQuestions}
-              onChange={(e) => setNumQuestions(parseInt(e.target.value))}
-            />
-          </div>
-
-          <Button
-            onClick={() => generateQuizMutation.mutate()}
-            disabled={!topic || isGenerating}
-            className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
-          >
-            {isGenerating ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Generating Quiz...
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4 mr-2" />
-                Generate Quiz
-              </>
-            )}
+          <Button variant="ghost" size="icon" onClick={onCancel}> {/* Changed onClose to onCancel */}
+            <X className="w-4 h-4" />
           </Button>
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div className="space-y-2">
+          <Label htmlFor="topic">Topic</Label>
+          <Select value={topic} onValueChange={setTopic}>
+            <SelectTrigger id="topic">
+              <SelectValue placeholder="Select a topic" />
+            </SelectTrigger>
+            <SelectContent>
+              <div className="px-2 py-1.5 text-sm font-semibold text-gray-500">Stage 4 (Years 7-8)</div>
+              {TOPICS.filter(t => t.stage === 4).map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+              <div className="px-2 py-1.5 text-sm font-semibold text-gray-500 mt-2">Stage 5 (Years 9-10)</div>
+              {TOPICS.filter(t => t.stage === 5).map((t) => (
+                <SelectItem key={t.value} value={t.value}>
+                  {t.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="difficulty">Difficulty</Label>
+          <Select value={difficulty} onValueChange={setDifficulty}>
+            <SelectTrigger id="difficulty">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="beginner">Beginner</SelectItem>
+              <SelectItem value="intermediate">Intermediate</SelectItem>
+              <SelectItem value="advanced">Advanced</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        <div className="space-y-2">
+          <Label htmlFor="questionCount">Number of Questions</Label>
+          <Input
+            id="questionCount"
+            type="number"
+            min="3"
+            max="10"
+            value={questionCount}
+            onChange={(e) => setQuestionCount(parseInt(e.target.value) || 0)} // Ensure parsed value is a number
+          />
+        </div>
+
+        <Button
+          onClick={generateQuiz} // Changed to call the generateQuiz function
+          disabled={!topic || isGenerating || questionCount < 3 || questionCount > 10 || questionCount === 0} // Added more robust validation for questionCount
+          className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
+        >
+          {isGenerating ? (
+            <>
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              Generating Quiz...
+            </>
+          ) : (
+            <>
+              <Sparkles className="w-4 h-4 mr-2" />
+              Generate Quiz
+            </>
+          )}
+        </Button>
+        {error && (
+          <div className="text-red-500 text-sm mt-2">{error}</div>
+        )}
+      </CardContent>
+    </Card>
   );
 }

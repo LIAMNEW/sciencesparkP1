@@ -12,7 +12,14 @@ import {
   Telescope,
   Wind,
   Droplets,
-  Heart,
+  FlaskConical,
+  BarChart3,
+  Dna,
+  Leaf,
+  Recycle,
+  Flame,
+  Waves,
+  Pill,
   ArrowRight,
   Sparkles,
   X
@@ -20,88 +27,183 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import ResourceRecommender from "../components/learning/ResourceRecommender";
 
+// NSW Science 7-10 (2023) Syllabus - Stage 4 and Stage 5 Topics
 const TOPICS = [
+  // STAGE 4 (Years 7-8)
   {
-    id: "cells",
-    title: "Cells & Classification",
-    description: "Explore the building blocks of life and how living things are organized",
-    icon: Microscope,
-    color: "from-green-500 to-emerald-600",
-    outcomes: ["SC4-LW-01", "SC4-WS-01", "SC4-WS-06"],
+    id: "observing-universe",
+    title: "Observing the Universe",
+    description: "Explore how scientific observations increase knowledge of the Universe",
+    icon: Telescope,
+    color: "from-indigo-500 to-purple-600",
+    outcomes: ["SC4-OTU-01", "SC4-WS-01", "SC4-WS-02"],
+    stage: 4,
     difficulty: "Beginner"
-  },
-  {
-    id: "body-systems",
-    title: "Body Systems",
-    description: "Discover how organs work together to keep us alive",
-    icon: Heart,
-    color: "from-red-500 to-pink-600",
-    outcomes: ["SC4-LW-02", "SC4-WS-03", "SC4-WS-04"],
-    difficulty: "Intermediate"
-  },
-  {
-    id: "mixtures",
-    title: "Mixtures & Separation",
-    description: "Learn about different types of mixtures and how to separate them",
-    icon: Droplets,
-    color: "from-blue-500 to-cyan-600",
-    outcomes: ["SC4-CW-01", "SC4-WS-02", "SC4-WS-04"],
-    difficulty: "Beginner"
-  },
-  {
-    id: "atoms",
-    title: "Particles & Atoms",
-    description: "Understand the tiny particles that make up everything",
-    icon: Atom,
-    color: "from-purple-500 to-violet-600",
-    outcomes: ["SC4-CW-02", "SC4-WS-01", "SC4-WS-07"],
-    difficulty: "Intermediate"
   },
   {
     id: "forces",
-    title: "Forces & Motion",
-    description: "Investigate how forces affect the movement of objects",
+    title: "Forces",
+    description: "Describe contact and non-contact forces, force diagrams and simple machines",
     icon: Wind,
-    color: "from-orange-500 to-amber-600",
+    color: "from-orange-500 to-red-600",
     outcomes: ["SC4-FOR-01", "SC4-WS-03", "SC4-WS-05"],
+    stage: 4,
     difficulty: "Intermediate"
   },
   {
-    id: "energy",
-    title: "Energy Transformations",
-    description: "Discover how energy changes from one form to another",
-    icon: Zap,
-    color: "from-yellow-500 to-orange-600",
-    outcomes: ["SC4-MOT-01", "SC4-WS-04", "SC4-WS-06"],
-    difficulty: "Intermediate"
-  },
-  {
-    id: "rock-cycle",
-    title: "Rock Cycle & Resources",
-    description: "Learn about rocks, minerals, and Earth's resources",
-    icon: Mountain,
-    color: "from-stone-500 to-slate-600",
-    outcomes: ["SC4-GEA-01", "SC4-WS-02", "SC4-WS-04"],
+    id: "cells-classification",
+    title: "Cells and Classification",
+    description: "Cell structures and classification of organisms using scientific conventions",
+    icon: Microscope,
+    color: "from-green-500 to-emerald-600",
+    outcomes: ["SC4-CLS-01", "SC4-WS-01", "SC4-WS-06"],
+    stage: 4,
     difficulty: "Beginner"
   },
   {
-    id: "universe",
-    title: "Observing the Universe",
-    description: "Explore space, stars, and our place in the cosmos",
-    icon: Telescope,
-    color: "from-indigo-500 to-blue-600",
-    outcomes: ["SC4-OUT-01", "SC4-WS-07"],
+    id: "solutions-mixtures",
+    title: "Solutions and Mixtures",
+    description: "Properties of substances and separation techniques",
+    icon: Droplets,
+    color: "from-blue-500 to-cyan-600",
+    outcomes: ["SC4-SOL-01", "SC4-WS-02", "SC4-WS-04"],
+    stage: 4,
+    difficulty: "Beginner"
+  },
+  {
+    id: "living-systems",
+    title: "Living Systems",
+    description: "Body systems, plant systems and ecosystems",
+    icon: Leaf,
+    color: "from-lime-500 to-green-600",
+    outcomes: ["SC4-LIV-01", "SC4-WS-03", "SC4-WS-04"],
+    stage: 4,
+    difficulty: "Intermediate"
+  },
+  {
+    id: "periodic-table",
+    title: "Periodic Table & Atomic Structure",
+    description: "Elements, compounds and atomic models",
+    icon: Atom,
+    color: "from-purple-500 to-pink-600",
+    outcomes: ["SC4-PRT-01", "SC4-WS-01", "SC4-WS-07"],
+    stage: 4,
+    difficulty: "Intermediate"
+  },
+  {
+    id: "change",
+    title: "Change",
+    description: "Energy causes geological and chemical change",
+    icon: Mountain,
+    color: "from-amber-500 to-orange-600",
+    outcomes: ["SC4-CHG-01", "SC4-WS-04", "SC4-WS-05"],
+    stage: 4,
+    difficulty: "Intermediate"
+  },
+  {
+    id: "data-science-1",
+    title: "Data Science 1",
+    description: "Using data to model and predict phenomena",
+    icon: BarChart3,
+    color: "from-teal-500 to-cyan-600",
+    outcomes: ["SC4-DA1-01", "SC4-WS-04", "SC4-WS-07"],
+    stage: 4,
+    difficulty: "Beginner"
+  },
+  
+  // STAGE 5 (Years 9-10)
+  {
+    id: "energy",
+    title: "Energy",
+    description: "Energy sources, conservation of energy and electrical circuits",
+    icon: Zap,
+    color: "from-yellow-500 to-orange-600",
+    outcomes: ["SC5-EGY-01", "SC5-WS-04", "SC5-WS-06"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "disease",
+    title: "Disease",
+    description: "Causes of disease, prevention and management",
+    icon: Pill,
+    color: "from-red-500 to-pink-600",
+    outcomes: ["SC5-DIS-01", "SC5-WS-04", "SC5-WS-06"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "materials",
+    title: "Materials",
+    description: "Chemical properties, bonding and polymers",
+    icon: FlaskConical,
+    color: "from-slate-500 to-gray-600",
+    outcomes: ["SC5-MAT-01", "SC5-WS-02", "SC5-WS-03"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "environmental-sustainability",
+    title: "Environmental Sustainability",
+    description: "Climate science, human impacts and recycling",
+    icon: Recycle,
+    color: "from-green-500 to-teal-600",
+    outcomes: ["SC5-ENV-01", "SC5-WS-05", "SC5-WS-06"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "genetics",
+    title: "Genetics & Evolutionary Change",
+    description: "DNA, inheritance and natural selection",
+    icon: Dna,
+    color: "from-violet-500 to-purple-600",
+    outcomes: ["SC5-GEV-01", "SC5-GEV-02", "SC5-WS-04"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "reactions",
+    title: "Reactions",
+    description: "Chemical and nuclear reactions",
+    icon: Flame,
+    color: "from-orange-500 to-red-600",
+    outcomes: ["SC5-RXN-01", "SC5-RXN-02", "SC5-WS-03"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "waves-motion",
+    title: "Waves and Motion",
+    description: "Properties of waves and Newton's laws of motion",
+    icon: Waves,
+    color: "from-blue-500 to-indigo-600",
+    outcomes: ["SC5-WAM-01", "SC5-WAM-02", "SC5-WS-04"],
+    stage: 5,
+    difficulty: "Advanced"
+  },
+  {
+    id: "data-science-2",
+    title: "Data Science 2",
+    description: "Evidence-based decisions and scientific claims",
+    icon: BarChart3,
+    color: "from-cyan-500 to-blue-600",
+    outcomes: ["SC5-DA2-01", "SC5-WS-07", "SC5-WS-08"],
+    stage: 5,
     difficulty: "Advanced"
   }
 ];
 
 export default function Topics() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
+  const [selectedStage, setSelectedStage] = useState("all");
   const [selectedTopic, setSelectedTopic] = useState(null);
 
-  const filteredTopics = selectedDifficulty === "all" 
-    ? TOPICS 
-    : TOPICS.filter(t => t.difficulty.toLowerCase() === selectedDifficulty);
+  const filteredTopics = TOPICS.filter(t => {
+    const difficultyMatch = selectedDifficulty === "all" || t.difficulty.toLowerCase() === selectedDifficulty;
+    const stageMatch = selectedStage === "all" || t.stage === parseInt(selectedStage);
+    return difficultyMatch && stageMatch;
+  });
 
   if (selectedTopic) {
     return (
@@ -117,9 +219,10 @@ export default function Topics() {
           <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${selectedTopic.color} flex items-center justify-center mb-4 shadow-lg`}>
             <selectedTopic.icon className="w-8 h-8 text-white" />
           </div>
+          <Badge variant="secondary" className="mb-2">Stage {selectedTopic.stage} • Years {selectedTopic.stage === 4 ? "7-8" : "9-10"}</Badge>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">{selectedTopic.title}</h1>
           <p className="text-lg text-gray-600 mb-4">{selectedTopic.description}</p>
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-2 mb-6 flex-wrap">
             <Badge variant="secondary">{selectedTopic.difficulty}</Badge>
             {selectedTopic.outcomes.map(outcome => (
               <Badge key={outcome} variant="outline">{outcome}</Badge>
@@ -156,28 +259,49 @@ export default function Topics() {
               <Sparkles className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">NSW Science Topics</h1>
-              <p className="text-gray-600">Years 7-8 Curriculum</p>
+              <h1 className="text-3xl font-bold text-gray-900">NSW Science 7-10 (2023)</h1>
+              <p className="text-gray-600">Complete NESA Syllabus Coverage</p>
             </div>
           </div>
           <p className="text-lg text-gray-600 mt-4">
-            Explore key science concepts aligned with NESA learning outcomes
+            Explore all Stage 4 and Stage 5 focus areas aligned with the NSW curriculum
           </p>
         </motion.div>
 
         {/* Filters */}
-        <div className="flex gap-2 mt-6 flex-wrap">
-          {["all", "beginner", "intermediate", "advanced"].map((level) => (
-            <Button
-              key={level}
-              variant={selectedDifficulty === level ? "default" : "outline"}
-              size="sm"
-              onClick={() => setSelectedDifficulty(level)}
-              className={selectedDifficulty === level ? "bg-gradient-to-r from-purple-600 to-blue-600" : ""}
-            >
-              {level.charAt(0).toUpperCase() + level.slice(1)}
-            </Button>
-          ))}
+        <div className="mt-6 space-y-3">
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">Stage</p>
+            <div className="flex gap-2 flex-wrap">
+              {["all", "4", "5"].map((stage) => (
+                <Button
+                  key={stage}
+                  variant={selectedStage === stage ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedStage(stage)}
+                  className={selectedStage === stage ? "bg-gradient-to-r from-purple-600 to-blue-600" : ""}
+                >
+                  {stage === "all" ? "All Stages" : `Stage ${stage} (Years ${stage === "4" ? "7-8" : "9-10"})`}
+                </Button>
+              ))}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-gray-700 mb-2">Difficulty</p>
+            <div className="flex gap-2 flex-wrap">
+              {["all", "beginner", "intermediate", "advanced"].map((level) => (
+                <Button
+                  key={level}
+                  variant={selectedDifficulty === level ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setSelectedDifficulty(level)}
+                  className={selectedDifficulty === level ? "bg-gradient-to-r from-purple-600 to-blue-600" : ""}
+                >
+                  {level.charAt(0).toUpperCase() + level.slice(1)}
+                </Button>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -188,7 +312,7 @@ export default function Topics() {
             key={topic.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.1 }}
+            transition={{ delay: index * 0.05 }}
           >
             <Card className="border-none shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-2 h-full group cursor-pointer">
               <CardHeader>
@@ -196,9 +320,14 @@ export default function Topics() {
                   <topic.icon className="w-8 h-8 text-white" />
                 </div>
                 <CardTitle className="text-xl mb-2">{topic.title}</CardTitle>
-                <Badge variant="secondary" className="w-fit">
-                  {topic.difficulty}
-                </Badge>
+                <div className="flex gap-2 mb-2 flex-wrap">
+                  <Badge variant="secondary" className="text-xs">
+                    Stage {topic.stage}
+                  </Badge>
+                  <Badge variant="outline" className="text-xs">
+                    {topic.difficulty}
+                  </Badge>
+                </div>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 mb-4">{topic.description}</p>

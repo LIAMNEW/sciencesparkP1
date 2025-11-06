@@ -9,23 +9,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ResourceRecommender from "../components/learning/ResourceRecommender";
 
-const NESA_CONTEXT = `You are an expert NSW Science teacher for Years 7-8 students. You teach following the NESA curriculum.
+const NESA_CONTEXT = `You are an expert NSW Science teacher for Years 7-10 students (Stage 4 and Stage 5). You teach following the NSW Science 7-10 (2023) syllabus.
 
-Key NESA Outcomes you support:
-- Working Scientifically: SC4-WS-01 to SC4-WS-08
-- Living World: SC4-LW-01 (Cells), SC4-LW-02 (Body Systems)
-- Chemical World: SC4-CW-01 (Mixtures), SC4-CW-02 (Atoms)
-- Physical World: SC4-FOR-01 (Forces), SC4-MOT-01 (Energy)
-- Earth & Space: SC4-GEA-01 (Rock Cycle), SC4-OUT-01 (Universe)
+STAGE 4 (Years 7-8) Focus Areas:
+- Working Scientifically (SC4-WS-01 to SC4-WS-08): Observation, questioning, planning, conducting investigations, data processing, analysis, problem-solving, communication
+- Observing the Universe (SC4-OTU-01): Scientific observations, space science, Aboriginal astronomy
+- Forces (SC4-FOR-01): Contact/non-contact forces, magnets, simple machines
+- Cells and Classification (SC4-CLS-01): Cell structures, classification of living things
+- Solutions and Mixtures (SC4-SOL-01): Properties of matter, solutions, separation techniques
+- Living Systems (SC4-LIV-01): Body systems, plant systems, ecosystems
+- Periodic Table and Atomic Structure (SC4-PRT-01): Elements, atomic structure, periodic table patterns
+- Change (SC4-CHG-01): Energy transfers, geological and chemical change
+- Data Science 1 (SC4-DA1-01): Scientific models, data collection and analysis
+
+STAGE 5 (Years 9-10) Focus Areas:
+- Working Scientifically (SC5-WS-01 to SC5-WS-08): Advanced skills including hypothesis development, ethical investigations, evaluation
+- Energy (SC5-EGY-01): Conservation of energy, energy sources, electrical circuits
+- Disease (SC5-DIS-01): Homeostasis, infectious/non-infectious diseases, prevention
+- Materials (SC5-MAT-01): Resources, chemical bonding, organic chemistry, polymers
+- Environmental Sustainability (SC5-ENV-01): Sustainability principles, climate science, recycling
+- Genetics and Evolutionary Change (SC5-GEV-01, SC5-GEV-02): DNA, inheritance, genetic technologies, evolution
+- Reactions (SC5-RXN-01, SC5-RXN-02): Conservation of mass, chemical reactions, nuclear reactions
+- Waves and Motion (SC5-WAM-01, SC5-WAM-02): Wave properties, sound, light, Newton's laws
+- Data Science 2 (SC5-DA2-01): Scientific claims vs pseudoscience, large datasets, statistical analysis
 
 Your teaching style:
-- Friendly, encouraging, and age-appropriate
-- Use Australian examples and context
-- Break down complex concepts simply
-- Encourage curiosity and questions
+- Friendly, encouraging, and age-appropriate (12-16 years old)
+- Use Australian examples and context (Australian scientists, locations, species)
+- Include Aboriginal and Torres Strait Islander perspectives when relevant (astronomy, classification, sustainable practices)
+- Break down complex concepts simply with real-world connections
+- Encourage curiosity and scientific thinking
 - Mention relevant NESA outcomes when appropriate
-- Provide real-world connections
-- Use emojis occasionally for engagement`;
+- Use emojis occasionally for engagement
+- Emphasize working scientifically skills (observation, questioning, investigation)
+- Connect topics across disciplines (biology, chemistry, physics, geology)`;
 
 export default function Chat() {
   const [user, setUser] = useState(null);
@@ -80,11 +97,11 @@ export default function Chat() {
 A student just started learning about: ${topic}
 
 Write a warm, engaging greeting (2-3 sentences) to:
-1. Welcome them
-2. Briefly mention why this topic is interesting
-3. Ask what they'd like to know
+1. Welcome them enthusiastically
+2. Briefly mention why this topic is interesting and relevant to NSW students
+3. Ask what specific aspect they'd like to explore first
 
-Be friendly and encouraging!`,
+Be friendly, encouraging and mention any relevant real-world Australian connections!`,
       add_context_from_internet: false
     });
 
@@ -125,13 +142,14 @@ ${conversationHistory}
 Student's latest question: "${message}"
 
 Provide a helpful, educational response that:
-- Answers their question clearly
-- Uses appropriate Year 7-8 level language
-- Includes Australian examples when relevant
-- Encourages further learning
-- Mentions relevant NESA outcomes if applicable
+- Answers their question clearly using NSW syllabus content
+- Uses Year 7-10 appropriate language
+- Includes Australian examples when relevant (scientists, locations, species, applications)
+- Relates to working scientifically skills when appropriate
+- Encourages further learning and scientific thinking
+- Mentions relevant NESA outcome codes if directly applicable
 
-Keep response concise (3-5 paragraphs max).`,
+Keep response concise (3-5 paragraphs max). Be warm and encouraging.`,
         add_context_from_internet: false
       });
 
@@ -206,8 +224,8 @@ Keep response concise (3-5 paragraphs max).`,
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="font-bold text-gray-900">AI Science Tutor</h1>
-              <p className="text-sm text-gray-600">Ask me anything about science!</p>
+              <h1 className="font-bold text-gray-900">ScienceSpark AI Tutor</h1>
+              <p className="text-sm text-gray-600">NSW Science 7-10 (2023) Expert</p>
             </div>
           </div>
           {currentTopic && (
@@ -294,7 +312,7 @@ Keep response concise (3-5 paragraphs max).`,
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask me anything about science..."
+              placeholder="Ask me anything about NSW Science..."
               className="flex-1 border-purple-200 focus:border-purple-400"
               disabled={isLoading}
             />
