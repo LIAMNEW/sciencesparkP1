@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ export default function Quizzes() {
   const [showCreator, setShowCreator] = useState(false);
   const [activeQuiz, setActiveQuiz] = useState(null);
   const [quizResults, setQuizResults] = useState(null);
+  const queryClient = useQueryClient();
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});
@@ -52,6 +54,12 @@ export default function Quizzes() {
     setActiveQuiz(null);
   };
 
+  const handleQuizCreated = (quiz) => {
+    queryClient.invalidateQueries(['quizzes']);
+    setShowCreator(false);
+    startQuiz(quiz);
+  };
+
   if (activeQuiz) {
     return <QuizTaker quiz={activeQuiz} onComplete={handleQuizComplete} onCancel={() => setActiveQuiz(null)} />;
   }
@@ -61,7 +69,7 @@ export default function Quizzes() {
   }
 
   if (showCreator) {
-    return <QuizCreator onClose={() => setShowCreator(false)} />;
+    return <QuizCreator onQuizCreated={handleQuizCreated} onCancel={() => setShowCreator(false)} />;
   }
 
   const stats = {
