@@ -51,12 +51,11 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - The Physics Classroom
    - Molecular Workbench
 
-3. 1-2 Free Digital Textbooks or Reading Resources:
-   - OpenStax (openstax.org) - Check for relevant K-12 or intro college books
-   - OER Commons (oercommons.org) - Search for high school science resources
-   - CK-12 Foundation (ck12.org)
-   - LibreTexts
-   - Boundless Science
+3. ALWAYS provide 2-3 Free Digital Textbooks or Reading Resources (Mandatory):
+   - OpenStax (openstax.org): Link to the BOOK DETAILS page or SUBJECT page (e.g., https://openstax.org/subjects/science). Avoid deep links to specific pages that might rot.
+   - OER Commons (oercommons.org): Provide a SEARCH QUERY URL for the topic (e.g., https://www.oercommons.org/search?f.search=TOPIC) to ensure the link always works.
+   - CK-12 or LibreTexts: Use Topic Hub pages.
+   - IF NO SPECIFIC BOOK IS FOUND, provide the general subject URL for OpenStax/OER Commons. THIS SECTION MUST NOT BE EMPTY.
 
 4. 2 hands-on activities students can try at home using common household materials
 
@@ -64,8 +63,11 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
 
 6. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
 
-IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs. If a deep link is unstable, provide the main landing page.
-Search for the most current and highly-rated resources to ensure variety.
+IMPORTANT: RELIABILITY IS KEY.
+- Avoid specific deep links (like specific articles) unless you are 100% sure they exist.
+- PREFER Topic Landing Pages or Search Result Pages (e.g., "https://www.nationalgeographic.org/society/education-resources/" or "https://science.nasa.gov/learn") over deep links that often 404.
+- For OpenStax, use the main book URL (e.g. "https://openstax.org/details/books/astronomy-2e").
+- For OER Commons, use a pre-filled search URL.
 
 Return ONLY valid JSON in this format:
 {
