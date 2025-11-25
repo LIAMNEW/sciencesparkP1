@@ -223,12 +223,22 @@ Return ONLY valid JSON in this format:
                   const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
                   
                   return (
-                    <a 
+                    <div 
                       key={index} 
-                      href={youtubeSearchUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
                       className="block p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-2 border-transparent hover:border-red-200"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -241,7 +251,7 @@ Return ONLY valid JSON in this format:
                         </div>
                         <ExternalLink className="w-5 h-5 text-red-600 flex-shrink-0" />
                       </div>
-                    </a>
+                    </div>
                   );
                 })}
               </CardContent>
@@ -266,12 +276,22 @@ Return ONLY valid JSON in this format:
                   if (!url) return null;
 
                   return (
-                    <a 
+                    <div 
                       key={index}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
                       className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border-2 border-transparent hover:border-blue-200"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -282,7 +302,7 @@ Return ONLY valid JSON in this format:
                         </div>
                         <ExternalLink className="w-5 h-5 text-blue-600 flex-shrink-0" />
                       </div>
-                    </a>
+                    </div>
                   );
                 })}
               </CardContent>
@@ -306,12 +326,22 @@ Return ONLY valid JSON in this format:
                   if (!url) return null;
 
                   return (
-                    <a 
+                    <div 
                       key={index}
-                      href={url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onClick={(e) => e.stopPropagation()}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        window.open(url, '_blank', 'noopener,noreferrer');
+                      }}
+                      role="button"
+                      tabIndex={0}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                        }
+                      }}
                       className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -324,7 +354,7 @@ Return ONLY valid JSON in this format:
                         </div>
                         <ExternalLink className="w-5 h-5 text-orange-600 flex-shrink-0" />
                       </div>
-                    </a>
+                    </div>
                   );
                 })}
               </CardContent>
