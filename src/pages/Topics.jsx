@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   Microscope, 
@@ -195,9 +195,20 @@ const TOPICS = [
 ];
 
 export default function Topics() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [selectedStage, setSelectedStage] = useState("all");
-  const [selectedTopic, setSelectedTopic] = useState(null);
+  
+  const topicId = searchParams.get("topic");
+  const selectedTopic = topicId ? TOPICS.find(t => t.id === topicId) || null : null;
+
+  const setSelectedTopic = (topic) => {
+    if (topic) {
+      setSearchParams({ topic: topic.id });
+    } else {
+      setSearchParams({});
+    }
+  };
 
   const filteredTopics = TOPICS.filter(t => {
     const difficultyMatch = selectedDifficulty === "all" || t.difficulty.toLowerCase() === selectedDifficulty;

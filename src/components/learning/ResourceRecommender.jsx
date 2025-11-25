@@ -18,6 +18,18 @@ export default function ResourceRecommender({ topic, outcomes = [], studentLevel
   const [resources, setResources] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
+  // Load resources from localStorage on mount
+  React.useEffect(() => {
+    try {
+      const saved = localStorage.getItem(`resources_${topic}`);
+      if (saved) {
+        setResources(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error("Failed to load resources", e);
+    }
+  }, [topic]);
+
   const generateResources = async () => {
     setIsLoading(true);
     
@@ -144,6 +156,7 @@ Return ONLY valid JSON in this format:
       });
 
       setResources(response);
+      localStorage.setItem(`resources_${topic}`, JSON.stringify(response));
     } catch (error) {
       console.error("Resource generation error:", error);
     }
