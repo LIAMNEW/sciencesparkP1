@@ -57,7 +57,8 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
 
 5. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
 
-IMPORTANT: Only recommend FREE resources that don't require paid subscriptions. Ensure URLs are accurate and currently accessible.
+IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs. If a deep link is unstable, provide the main landing page.
+Search for the most current and highly-rated resources to ensure variety.
 
 Return ONLY valid JSON in this format:
 {
@@ -76,6 +77,7 @@ Return ONLY valid JSON in this format:
 
       const response = await base44.integrations.Core.InvokeLLM({
         prompt,
+        add_context_from_internet: true,
         response_json_schema: {
           type: "object",
           properties: {
