@@ -51,11 +51,12 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - The Physics Classroom
    - Molecular Workbench
 
-3. ALWAYS provide 2-3 Free Digital Textbooks or Reading Resources (Mandatory):
-   - OpenStax (openstax.org): Link to the BOOK DETAILS page or SUBJECT page (e.g., https://openstax.org/subjects/science). Avoid deep links to specific pages that might rot.
-   - OER Commons (oercommons.org): Provide a SEARCH QUERY URL for the topic (e.g., https://www.oercommons.org/search?f.search=TOPIC) to ensure the link always works.
-   - CK-12 or LibreTexts: Use Topic Hub pages.
-   - IF NO SPECIFIC BOOK IS FOUND, provide the general subject URL for OpenStax/OER Commons. THIS SECTION MUST NOT BE EMPTY.
+3. 1-2 Free Digital Textbooks or Reading Resources:
+   - OpenStax (openstax.org) - Check for relevant K-12 or intro college books
+   - OER Commons (oercommons.org) - Search for high school science resources
+   - CK-12 Foundation (ck12.org)
+   - LibreTexts
+   - Boundless Science
 
 4. 2 hands-on activities students can try at home using common household materials
 
@@ -63,11 +64,8 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
 
 6. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
 
-IMPORTANT: RELIABILITY IS KEY.
-- Avoid specific deep links (like specific articles) unless you are 100% sure they exist.
-- PREFER Topic Landing Pages or Search Result Pages (e.g., "https://www.nationalgeographic.org/society/education-resources/" or "https://science.nasa.gov/learn") over deep links that often 404.
-- For OpenStax, use the main book URL (e.g. "https://openstax.org/details/books/astronomy-2e").
-- For OER Commons, use a pre-filled search URL.
+IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs. If a deep link is unstable, provide the main landing page.
+Search for the most current and highly-rated resources to ensure variety.
 
 Return ONLY valid JSON in this format:
 {
@@ -76,9 +74,6 @@ Return ONLY valid JSON in this format:
   ],
   "simulations": [
     {"title": "Activity name", "description": "What to do", "url": "full URL to the resource"}
-  ],
-  "readings": [
-    {"title": "Book/Article title", "description": "Brief description", "url": "full URL", "source": "OpenStax/OER Commons/etc"}
   ],
   "activities": [
     {"title": "Activity name", "description": "Step-by-step instructions", "materials": "What they need"}
@@ -297,47 +292,33 @@ Return ONLY valid JSON in this format:
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-3">
-                {resources.readings?.length > 0 ? (
-                  resources.readings.map((reading, index) => {
-                    let url = reading.url;
-                    if (!url.startsWith('http://') && !url.startsWith('https://')) {
-                      url = 'https://' + url;
-                    }
-                    
-                    return (
-                      <a 
-                        key={index}
-                        href={url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <div className="flex-1">
-                            <h4 className="font-semibold text-gray-900 mb-1">{reading.title}</h4>
-                            <p className="text-sm text-gray-600 mb-2">{reading.description}</p>
-                            <Badge variant="outline" className="text-xs text-orange-700 border-orange-200">
-                              {reading.source}
-                            </Badge>
-                          </div>
-                          <ExternalLink className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                {resources.readings?.map((reading, index) => {
+                  let url = reading.url;
+                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                  }
+                  
+                  return (
+                    <a 
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1">{reading.title}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{reading.description}</p>
+                          <Badge variant="outline" className="text-xs text-orange-700 border-orange-200">
+                            {reading.source}
+                          </Badge>
                         </div>
-                      </a>
-                    );
-                  })
-                ) : (
-                  <div className="p-4 bg-orange-50 rounded-lg border border-orange-100">
-                     <p className="text-sm text-gray-600 mb-3">Browse these trusted libraries for "{topic}":</p>
-                     <div className="grid gap-2">
-                        <a href={`https://www.oercommons.org/search?f.search=${encodeURIComponent(topic)}`} target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:underline flex items-center gap-2 text-sm font-medium">
-                          <ExternalLink className="w-3 h-3" /> Search OER Commons
-                        </a>
-                        <a href="https://openstax.org/subjects/science" target="_blank" rel="noopener noreferrer" className="text-orange-600 hover:underline flex items-center gap-2 text-sm font-medium">
-                          <ExternalLink className="w-3 h-3" /> Browse OpenStax Science
-                        </a>
-                     </div>
-                  </div>
-                )}
+                        <ExternalLink className="w-5 h-5 text-orange-600 flex-shrink-0" />
+                      </div>
+                    </a>
+                  );
+                })}
               </CardContent>
             </Card>
 
