@@ -55,7 +55,7 @@ CRITICAL: Verify ALL links are working and lead to the specific content describe
 
 3. 2-3 High-Quality Reading/Textbook Resources (EXPANDED):
    - Source 1: OpenStax (https://openstax.org/k12) - specific chapter/book.
-   - Source 2: OER Commons (https://oercommons.org) - Search for "High School Science", "Stage 4 Science", "Stage 5 Science" or specific subjects (Biology, Physics, etc.).
+   - Source 2: OER Commons - Use the link "https://oercommons.org/oer" so students can search for specific resources themselves.
    - Source 3: Other reputable free educational sites (e.g., CK-12 FlexBooks, Lumen Learning).
    - MUST be specific to the topic and appropriate for High School level.
 
