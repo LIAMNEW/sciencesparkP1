@@ -40,7 +40,8 @@ Provide encouraging, personalized feedback that includes:
 3. **Next Steps**: Practical study suggestions (videos to watch, activities to try, concepts to practice)
 4. **Encouragement**: Motivating message about their learning journey
 
-Keep it warm, age-appropriate, and under 300 words. Use Australian English.`;
+Keep it warm, age-appropriate, and under 300 words. Use Australian English.
+IMPORTANT: Do NOT include a signature, name, or placeholder like "[Your Name]" at the end. Just end with the encouraging message.`;
 
       const feedback = await base44.integrations.Core.InvokeLLM({
         prompt,
