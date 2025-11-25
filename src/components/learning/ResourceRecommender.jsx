@@ -53,6 +53,7 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
 
 3. 1-2 Free Digital Textbooks or Reading Resources:
    - OpenStax (openstax.org) - Check for relevant K-12 or intro college books
+   - OER Commons (oercommons.org) - Search for high school science resources
    - CK-12 Foundation (ck12.org)
    - LibreTexts
    - Boundless Science
