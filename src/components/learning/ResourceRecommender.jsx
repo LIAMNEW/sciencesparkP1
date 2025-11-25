@@ -77,6 +77,9 @@ Return ONLY valid JSON in this format:
   "simulations": [
     {"title": "Activity name", "description": "What to do", "url": "full URL to the resource"}
   ],
+  "readings": [
+    {"title": "Book/Article title", "description": "Brief description", "url": "full URL", "source": "OpenStax/OER Commons/etc"}
+  ],
   "activities": [
     {"title": "Activity name", "description": "Step-by-step instructions", "materials": "What they need"}
   ],
