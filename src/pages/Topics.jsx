@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -199,13 +199,26 @@ export default function Topics() {
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [selectedStage, setSelectedStage] = useState("all");
   
+  // Sync with local storage for persistence across reloads
+  useEffect(() => {
+    const savedTopicId = localStorage.getItem("current_topic_id");
+    const urlTopicId = searchParams.get("topic");
+    
+    if (!urlTopicId && savedTopicId) {
+      // Restore from storage if URL param is missing (e.g. after reload/back navigation)
+      setSearchParams({ topic: savedTopicId });
+    }
+  }, []);
+
   const topicId = searchParams.get("topic");
   const selectedTopic = topicId ? TOPICS.find(t => t.id === topicId) || null : null;
 
   const setSelectedTopic = (topic) => {
     if (topic) {
+      localStorage.setItem("current_topic_id", topic.id);
       setSearchParams({ topic: topic.id });
     } else {
+      localStorage.removeItem("current_topic_id");
       setSearchParams({});
     }
   };
