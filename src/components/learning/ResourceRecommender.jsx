@@ -228,7 +228,10 @@ Return ONLY valid JSON in this format:
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
+                        e.nativeEvent.stopImmediatePropagation();
+                        setTimeout(() => {
+                          window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
+                        }, 100);
                       }}
                       role="button"
                       tabIndex={0}
@@ -281,7 +284,10 @@ Return ONLY valid JSON in this format:
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        window.open(url, '_blank', 'noopener,noreferrer');
+                        e.nativeEvent.stopImmediatePropagation();
+                        setTimeout(() => {
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                        }, 100);
                       }}
                       role="button"
                       tabIndex={0}
@@ -331,7 +337,10 @@ Return ONLY valid JSON in this format:
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        window.open(url, '_blank', 'noopener,noreferrer');
+                        e.nativeEvent.stopImmediatePropagation();
+                        setTimeout(() => {
+                          window.open(url, '_blank', 'noopener,noreferrer');
+                        }, 100);
                       }}
                       role="button"
                       tabIndex={0}
