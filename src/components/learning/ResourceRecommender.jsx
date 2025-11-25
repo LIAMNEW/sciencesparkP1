@@ -51,11 +51,17 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - The Physics Classroom
    - Molecular Workbench
 
-3. 2 hands-on activities students can try at home using common household materials
+3. 1-2 Free Digital Textbooks or Reading Resources:
+   - OpenStax (openstax.org) - Check for relevant K-12 or intro college books
+   - CK-12 Foundation (ck12.org)
+   - LibreTexts
+   - Boundless Science
 
-4. 3 key concepts to focus on aligned with NESA outcomes
+4. 2 hands-on activities students can try at home using common household materials
 
-5. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
+5. 3 key concepts to focus on aligned with NESA outcomes
+
+6. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
 
 IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs. If a deep link is unstable, provide the main landing page.
 Search for the most current and highly-rated resources to ensure variety.
@@ -100,6 +106,18 @@ Return ONLY valid JSON in this format:
                   title: { type: "string" },
                   description: { type: "string" },
                   url: { type: "string" }
+                }
+              }
+            },
+            readings: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  title: { type: "string" },
+                  description: { type: "string" },
+                  url: { type: "string" },
+                  source: { type: "string" }
                 }
               }
             },
@@ -257,6 +275,45 @@ Return ONLY valid JSON in this format:
                           <p className="text-xs text-blue-600 font-medium">{sim.url}</p>
                         </div>
                         <ExternalLink className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                      </div>
+                    </a>
+                  );
+                })}
+              </CardContent>
+            </Card>
+
+            {/* Free Textbooks & Readings */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BookOpen className="w-5 h-5 text-orange-600" />
+                  Free Textbooks & Readings
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {resources.readings?.map((reading, index) => {
+                  let url = reading.url;
+                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                  }
+                  
+                  return (
+                    <a 
+                      key={index}
+                      href={url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex-1">
+                          <h4 className="font-semibold text-gray-900 mb-1">{reading.title}</h4>
+                          <p className="text-sm text-gray-600 mb-2">{reading.description}</p>
+                          <Badge variant="outline" className="text-xs text-orange-700 border-orange-200">
+                            {reading.source}
+                          </Badge>
+                        </div>
+                        <ExternalLink className="w-5 h-5 text-orange-600 flex-shrink-0" />
                       </div>
                     </a>
                   );
