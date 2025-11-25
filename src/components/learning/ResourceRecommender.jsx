@@ -51,12 +51,11 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - The Physics Classroom
    - Molecular Workbench
 
-3. 1-2 Free Digital Textbooks or Reading Resources:
-   - OpenStax (openstax.org) - Check for relevant K-12 or intro college books
-   - OER Commons (oercommons.org) - Search for high school science resources
-   - CK-12 Foundation (ck12.org)
-   - LibreTexts
-   - Boundless Science
+3. EXACTLY ONE (1) Best Free Digital Textbook Resource:
+   - PRIMARY SOURCE: OpenStax (openstax.org). YOU MUST CHECK OPENSTAX FIRST. Look for 'High School Physics', 'High School Chemistry', 'Biology 2e', 'Concepts of Biology', or 'Astronomy' books. Provide a DIRECT link to the relevant chapter/section.
+   - SECONDARY SOURCE: OER Commons (oercommons.org). Use ONLY if OpenStax has no relevant content for this specific topic.
+   - TERTIARY: CK-12 Foundation.
+   - CRITICAL: Provide ONLY ONE textbook resource. The URL must be verified and working.
 
 4. 2 hands-on activities students can try at home using common household materials
 
