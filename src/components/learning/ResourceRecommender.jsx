@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,18 +22,42 @@ export default function ResourceRecommender({ topic, outcomes = [], studentLevel
     setIsLoading(true);
     
     try {
-      const prompt = `You are an expert NSW Science educator. Generate personalized learning resources for a Year 7-8 student.
+      const prompt = `You are an expert NSW Science educator. Generate personalized FREE learning resources for a Year 7-10 student.
 
 Topic: ${topic}
 NESA Outcomes: ${outcomes.join(", ")}
 Student Level: ${studentLevel}
 
-Generate a comprehensive learning resource guide with:
-1. 3 recommended YouTube videos (use real Australian science education channels like "Science with Skilldog", "Khan Academy", or general science channels)
-2. 2 interactive simulations or websites (like PhET, LabXchange, CSIRO Education)
-3. 2 hands-on activities students can try at home
-4. 3 key concepts to focus on
-5. Real-world Australian connections
+Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSIBLE resources:
+
+1. 3 recommended YouTube videos from reputable educational channels such as:
+   - Australian: Science with Skilldog, ABC Education, CSIRO, Questacon, Australian Museum
+   - International: Khan Academy, CrashCourse, Veritasium, MinutePhysics, SmarterEveryDay, Kurzgesagt, Bozeman Science, Professor Dave Explains, The Organic Chemistry Tutor, Amoeba Sisters, FuseSchool, TED-Ed, SciShow, National Geographic Education
+   - Prioritize Australian content where available, but include high-quality international channels
+
+2. 2 interactive simulations or educational websites (ALL MUST BE FREE):
+   - PhET Interactive Simulations (phet.colorado.edu)
+   - LabXchange (labxchange.org)
+   - CSIRO Education (csiro.au/education)
+   - ABC Education interactive resources
+   - NASA STEM Resources
+   - Exploratorium (exploratorium.edu)
+   - BBC Bitesize Science
+   - CK-12 Foundation (ck12.org)
+   - Concord Consortium simulations
+   - ChemCollective virtual labs
+   - BioInteractive (HHMI)
+   - Cells Alive
+   - The Physics Classroom
+   - Molecular Workbench
+
+3. 2 hands-on activities students can try at home using common household materials
+
+4. 3 key concepts to focus on aligned with NESA outcomes
+
+5. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
+
+IMPORTANT: Only recommend FREE resources that don't require paid subscriptions. Ensure URLs are accurate and currently accessible.
 
 Return ONLY valid JSON in this format:
 {
@@ -42,7 +65,7 @@ Return ONLY valid JSON in this format:
     {"title": "Video title", "description": "What they'll learn", "channel": "Channel name"}
   ],
   "simulations": [
-    {"title": "Activity name", "description": "What to do", "url": "phetsims.com or similar"}
+    {"title": "Activity name", "description": "What to do", "url": "full URL to the resource"}
   ],
   "activities": [
     {"title": "Activity name", "description": "Step-by-step instructions", "materials": "What they need"}
