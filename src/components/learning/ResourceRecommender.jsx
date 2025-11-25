@@ -228,6 +228,7 @@ Return ONLY valid JSON in this format:
                       href={youtubeSearchUrl}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
                       className="block p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-2 border-transparent hover:border-red-200"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -257,17 +258,20 @@ Return ONLY valid JSON in this format:
               <CardContent className="space-y-3">
                 {resources.simulations?.map((sim, index) => {
                   // Ensure URL has proper protocol
-                  let url = sim.url;
-                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  let url = sim.url || '';
+                  if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
                     url = 'https://' + url;
                   }
                   
+                  if (!url) return null;
+
                   return (
                     <a 
                       key={index}
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
                       className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border-2 border-transparent hover:border-blue-200"
                     >
                       <div className="flex items-start justify-between gap-3">
@@ -294,17 +298,20 @@ Return ONLY valid JSON in this format:
               </CardHeader>
               <CardContent className="space-y-3">
                 {resources.readings?.map((reading, index) => {
-                  let url = reading.url;
-                  if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                  let url = reading.url || '';
+                  if (url && !url.startsWith('http://') && !url.startsWith('https://')) {
                     url = 'https://' + url;
                   }
                   
+                  if (!url) return null;
+
                   return (
                     <a 
                       key={index}
                       href={url}
                       target="_blank"
                       rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
                       className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
                     >
                       <div className="flex items-start justify-between gap-3">
