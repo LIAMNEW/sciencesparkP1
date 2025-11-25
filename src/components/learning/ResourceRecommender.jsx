@@ -34,6 +34,7 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - Australian: Science with Skilldog, ABC Education, CSIRO, Questacon, Australian Museum
    - International: Khan Academy, CrashCourse, Veritasium, MinutePhysics, SmarterEveryDay, Kurzgesagt, Bozeman Science, Professor Dave Explains, The Organic Chemistry Tutor, Amoeba Sisters, FuseSchool, TED-Ed, SciShow, National Geographic Education
    - Prioritize Australian content where available, but include high-quality international channels
+   - CRITICAL: DO NOT recommend OpenStax videos or OER Commons resources here.
 
 2. 2 interactive simulations or educational websites (ALL MUST BE FREE):
    - PhET Interactive Simulations (phet.colorado.edu)
@@ -50,6 +51,7 @@ Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSI
    - Cells Alive
    - The Physics Classroom
    - Molecular Workbench
+   - CRITICAL: DO NOT use OpenStax or OER Commons simulations here. Keep them for the textbooks section.
 
 3. EXACTLY ONE (1) Best Free Digital Textbook Resource (MANDATORY):
    - PRIORITY 1: OpenStax (https://openstax.org/k12). Search specifically for OpenStax textbooks covering this topic (e.g., High School Physics, Chemistry, Biology, Astronomy). Provide a DIRECT URL to the specific book or chapter.
