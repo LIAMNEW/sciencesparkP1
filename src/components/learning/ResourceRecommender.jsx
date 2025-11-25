@@ -40,44 +40,32 @@ Topic: ${topic}
 NESA Outcomes: ${outcomes.join(", ")}
 Student Level: ${studentLevel}
 
-Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSIBLE resources:
+Generate a comprehensive learning resource guide with DIVERSE, FREE, and ACCESSIBLE resources.
+CRITICAL: Verify ALL links are working and lead to the specific content described. Do not output 404 or "page not found" links.
 
-1. 3 recommended YouTube videos from reputable educational channels such as:
-   - Australian: Science with Skilldog, ABC Education, CSIRO, Questacon, Australian Museum
-   - International: Khan Academy, CrashCourse, Veritasium, MinutePhysics, SmarterEveryDay, Kurzgesagt, Bozeman Science, Professor Dave Explains, The Organic Chemistry Tutor, Amoeba Sisters, FuseSchool, TED-Ed, SciShow, National Geographic Education
-   - Prioritize Australian content where available, but include high-quality international channels
-   - CRITICAL: DO NOT recommend OpenStax videos or OER Commons resources here.
+1. 4 recommended YouTube videos (INCREASED VARIETY):
+   - Mix of Australian (ABC Education, CSIRO, Questacon) and high-quality international channels.
+   - Look for specific, high-rated videos that explain concepts clearly.
+   - Avoid repeating the same channel multiple times if possible.
 
-2. 2 interactive simulations or educational websites (ALL MUST BE FREE):
-   - PhET Interactive Simulations (phet.colorado.edu)
-   - LabXchange (labxchange.org)
-   - CSIRO Education (csiro.au/education)
-   - ABC Education interactive resources
-   - NASA STEM Resources
-   - Exploratorium (exploratorium.edu)
-   - BBC Bitesize Science
-   - CK-12 Foundation (ck12.org)
-   - Concord Consortium simulations
-   - ChemCollective virtual labs
-   - BioInteractive (HHMI)
-   - Cells Alive
-   - The Physics Classroom
-   - Molecular Workbench
-   - CRITICAL: DO NOT use OpenStax or OER Commons simulations here. Keep them for the textbooks section.
+2. 3 interactive simulations or specific educational web pages (ALL MUST BE FREE):
+   - Prioritize: PhET, LabXchange, CK-12, BioInteractive, The Physics Classroom, Concord Consortium.
+   - Also search for topic-specific interactive tools.
+   - Ensure the link goes DIRECTLY to the simulation/activity, not a general homepage.
 
-3. EXACTLY ONE (1) Best Free Digital Textbook Resource (MANDATORY):
-   - PRIORITY 1: OpenStax (https://openstax.org/k12). Search specifically for OpenStax textbooks covering this topic (e.g., High School Physics, Chemistry, Biology, Astronomy). Provide a DIRECT URL to the specific book or chapter.
-   - PRIORITY 2: OER Commons. Use the search: https://oercommons.org/browse?f.general_subject=applied-science&f.sublevel=high-school&f.license_types=no-strings-attached&f.language=en
-   - REQUIREMENT: You MUST find at least one valid textbook link. If OpenStax has a relevant book, use it. If not, find the best rated resource on OER Commons.
-   - The "readings" array in the JSON response MUST contain this item.
+3. 2-3 High-Quality Reading/Textbook Resources (EXPANDED):
+   - Source 1: OpenStax (https://openstax.org/k12) - specific chapter/book.
+   - Source 2: OER Commons (https://oercommons.org) - Search for "High School Science", "Stage 4 Science", "Stage 5 Science" or specific subjects (Biology, Physics, etc.).
+   - Source 3: Other reputable free educational sites (e.g., CK-12 FlexBooks, Lumen Learning).
+   - MUST be specific to the topic and appropriate for High School level.
 
-4. 2 hands-on activities students can try at home using common household materials
+4. 2 hands-on activities students can try at home using common household materials.
 
-5. 3 key concepts to focus on aligned with NESA outcomes
+5. 3 key concepts to focus on aligned with NESA outcomes.
 
-6. Real-world Australian connections (Australian scientists, locations, species, environmental issues, or industries)
+6. Real-world Australian connections.
 
-IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs. If a deep link is unstable, provide the main landing page.
+IMPORTANT: Use your internet access to VERIFY that every URL is a currently working, valid link. Do not guess URLs.
 Search for the most current and highly-rated resources to ensure variety.
 
 Return ONLY valid JSON in this format:
@@ -87,6 +75,9 @@ Return ONLY valid JSON in this format:
   ],
   "simulations": [
     {"title": "Activity name", "description": "What to do", "url": "full URL to the resource"}
+  ],
+  "readings": [
+    {"title": "Resource title", "description": "Brief description", "url": "full URL", "source": "OpenStax/OER Commons/etc"}
   ],
   "activities": [
     {"title": "Activity name", "description": "Step-by-step instructions", "materials": "What they need"}
