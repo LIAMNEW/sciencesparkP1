@@ -117,7 +117,7 @@ export default function Dashboard() {
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: index * 0.1 }}
           >
-            <Card className="border-none shadow-md hover:shadow-lg transition-shadow">
+            <Card className="border-none shadow-md hover:shadow-lg transition-shadow bg-white">
               <CardContent className="p-6">
                 <div className={`w-12 h-12 rounded-xl bg-gradient-to-br from-${stat.color}-500 to-${stat.color}-600 flex items-center justify-center mb-3`}>
                   <stat.icon className="w-6 h-6 text-white" />
@@ -132,7 +132,7 @@ export default function Dashboard() {
 
       {/* Quick Actions */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 mb-4">Quick Actions</h2>
+        <h2 className="text-2xl font-bold text-gray-900 mb-4 dark:text-gray-900">Quick Actions</h2>
         <div className="grid md:grid-cols-3 gap-4">
           {quickActions.map((action, index) => (
             <motion.div
@@ -142,7 +142,7 @@ export default function Dashboard() {
               transition={{ delay: 0.2 + index * 0.1 }}
             >
               <Link to={action.link}>
-                <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group">
+                <Card className="border-none shadow-md hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer group bg-white">
                   <CardContent className="p-6">
                     <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${action.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                       <action.icon className="w-7 h-7 text-white" />
@@ -160,9 +160,9 @@ export default function Dashboard() {
       {/* Recent Activity */}
       <div className="grid md:grid-cols-2 gap-6">
         {/* Recent Chats */}
-        <Card className="border-none shadow-md">
+        <Card className="border-none shadow-md bg-white">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <Clock className="w-5 h-5 text-purple-600" />
               Recent Conversations
             </CardTitle>
@@ -191,9 +191,9 @@ export default function Dashboard() {
         </Card>
 
         {/* Recent Quizzes */}
-        <Card className="border-none shadow-md">
+        <Card className="border-none shadow-md bg-white">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-gray-900">
               <Trophy className="w-5 h-5 text-blue-600" />
               Recent Quiz Results
             </CardTitle>
