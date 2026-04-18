@@ -1,4 +1,5 @@
 import './App.css'
+import React from 'react';
 import Settings from './pages/Settings';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
