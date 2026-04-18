@@ -7,8 +7,10 @@ import {
   BookOpen, 
   BrainCircuit,
   TrendingUp,
-  Sparkles
+  Sparkles,
+  Settings
 } from "lucide-react";
+import BottomNav from "@/components/layout/BottomNav";
 import {
   Sidebar,
   SidebarContent,
@@ -50,6 +52,11 @@ const navigationItems = [
     url: createPageUrl("Progress"),
     icon: TrendingUp,
   },
+  {
+    title: "Settings",
+    url: "/Settings",
+    icon: Settings,
+  },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -57,7 +64,12 @@ export default function Layout({ children, currentPageName }) {
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50">
+      <div
+        className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50"
+        style={{
+          paddingTop: "env(safe-area-inset-top)",
+        }}
+      >
         <Sidebar className="border-r border-purple-100 bg-white/80 backdrop-blur-sm">
           <SidebarHeader className="border-b border-purple-100 p-6">
             <div className="flex items-center gap-3">
@@ -125,10 +137,16 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </header>
 
-          <div className="flex-1 overflow-auto">
-            {children}
+          <div
+            className="flex-1 overflow-auto"
+            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+          >
+            <div className="pb-20 lg:pb-0">
+              {children}
+            </div>
           </div>
         </main>
+        <BottomNav />
       </div>
     </SidebarProvider>
   );

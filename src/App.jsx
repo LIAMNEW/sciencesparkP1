@@ -1,4 +1,5 @@
 import './App.css'
+import Settings from './pages/Settings';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
         {Object.entries(Pages).map(([path, Page]) => (
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
+        <Route path="/Settings" element={<LayoutWrapper currentPageName="Settings"><Settings /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>
@@ -57,6 +59,15 @@ const AuthenticatedApp = () => {
 
 
 function App() {
+  React.useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = (e) => {
+      document.documentElement.classList.toggle("dark", e.matches);
+    };
+    applyTheme(mq);
+    mq.addEventListener("change", applyTheme);
+    return () => mq.removeEventListener("change", applyTheme);
+  }, []);
 
   return (
     <AuthProvider>
