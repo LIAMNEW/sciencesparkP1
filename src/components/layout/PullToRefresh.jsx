@@ -41,7 +41,6 @@ export default function PullToRefresh({ children, onRefresh }) {
     <div
       ref={containerRef}
       className="flex-1 overflow-auto relative"
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
@@ -61,7 +60,8 @@ export default function PullToRefresh({ children, onRefresh }) {
           </div>
         )}
       </div>
-      <div className="pb-20 lg:pb-0">
+      {/* pb-20 clears the BottomNav on mobile; safe-area padding for home-bar devices */}
+      <div className="pb-20 lg:pb-0" style={{ paddingBottom: "calc(5rem + env(safe-area-inset-bottom))" }}>
         {children}
       </div>
     </div>

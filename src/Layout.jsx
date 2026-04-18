@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   LayoutDashboard, 
@@ -11,6 +11,7 @@ import {
   Settings
 } from "lucide-react";
 import BottomNav from "@/components/layout/BottomNav";
+import MobileHeader from "@/components/layout/MobileHeader";
 import PullToRefresh from "@/components/layout/PullToRefresh";
 import { useQueryClient } from "@tanstack/react-query";
 import {
@@ -25,7 +26,6 @@ import {
   SidebarHeader,
   SidebarFooter,
   SidebarProvider,
-  SidebarTrigger,
 } from "@/components/ui/sidebar";
 
 const navigationItems = [
@@ -71,10 +71,7 @@ export default function Layout({ children, currentPageName }) {
   return (
     <SidebarProvider>
       <div
-        className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50"
-        style={{
-          paddingTop: "env(safe-area-inset-top)",
-        }}
+        className="min-h-screen flex w-full bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950"
       >
         <Sidebar className="border-r border-purple-100 bg-white/80 backdrop-blur-sm">
           <SidebarHeader className="border-b border-purple-100 p-6">
@@ -134,14 +131,7 @@ export default function Layout({ children, currentPageName }) {
         </Sidebar>
 
         <main className="flex-1 flex flex-col min-w-0">
-          <header className="bg-white/80 backdrop-blur-sm border-b border-purple-100 px-6 py-4 lg:hidden">
-            <div className="flex items-center gap-4">
-              <SidebarTrigger className="hover:bg-purple-50 p-2 rounded-lg transition-colors" />
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
-                Science AI
-              </h1>
-            </div>
-          </header>
+          <MobileHeader />
 
           <PullToRefresh onRefresh={handleRefresh}>
             {children}
