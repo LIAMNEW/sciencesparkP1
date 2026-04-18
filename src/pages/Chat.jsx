@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -131,26 +130,22 @@ Be friendly, encouraging and mention any relevant real-world Australian connecti
   const sendMessageMutation = useMutation({
     mutationFn: async (message) => {
       setIsLoading(true);
-      setError(null); // Clear previous errors when sending a new message
+      setError(null);
 
-      try {
-        await base44.entities.ChatMessage.create({
-          session_id: sessionId,
-          role: "user",
-          content: message
-        });
+      // Optimistic update: add user message immediately
+      const optimisticUserMsg = { id: `opt-user-${Date.now()}`, session_id: sessionId, role: "user", content: message };
+      queryClient.setQueryData(['messages', sessionId], (old = []) => [...old, optimisticUserMsg]);
 
-        const history = await base44.entities.ChatMessage.filter(
-          { session_id: sessionId }, 
-          'created_date'
-        );
+      await base44.entities.ChatMessage.create({ session_id: sessionId, role: "user", content: message });
 
-        const conversationHistory = history.slice(-6).map(m => 
-          `${m.role === 'user' ? 'Student' : 'Teacher'}: ${m.content}`
-        ).join('\n\n');
+      const history = await base44.entities.ChatMessage.filter({ session_id: sessionId }, 'created_date');
 
-        const response = await base44.integrations.Core.InvokeLLM({
-          prompt: `${NESA_CONTEXT}
+      const conversationHistory = history.slice(-6).map(m =>
+        `${m.role === 'user' ? 'Student' : 'Teacher'}: ${m.content}`
+      ).join('\n\n');
+
+      const response = await base44.integrations.Core.InvokeLLM({
+        prompt: `${NESA_CONTEXT}
 
 Conversation so far:
 ${conversationHistory}
@@ -166,36 +161,30 @@ Provide a helpful, educational response that:
 - Mentions relevant NESA outcome codes if directly applicable
 
 Keep response concise (3-5 paragraphs max). Be warm and encouraging.`,
-          add_context_from_internet: false
-        });
+        add_context_from_internet: false
+      });
 
-        await base44.entities.ChatMessage.create({
-          session_id: sessionId,
-          role: "assistant",
-          content: response
-        });
+      await base44.entities.ChatMessage.create({ session_id: sessionId, role: "assistant", content: response });
 
-        await base44.entities.ChatSession.update(sessionId, {
-          last_message: message.slice(0, 100),
-          message_count: history.length + 2
-        });
+      await base44.entities.ChatSession.update(sessionId, {
+        last_message: message.slice(0, 100),
+        message_count: history.length + 2
+      });
 
-        setIsLoading(false);
-        return response;
-      } catch (err) {
-        setIsLoading(false);
-        setError("Failed to send message. Please try again.");
-        console.error("Send message error:", err);
-        throw err; // Re-throw the error so react-query can handle it if needed
-      }
+      setIsLoading(false);
+      return response;
     },
     onSuccess: () => {
       queryClient.invalidateQueries(['messages', sessionId]);
       setInput("");
-      setError(null); // Clear error on successful send
+      setError(null);
     },
-    onError: () => {
-      setIsLoading(false); // Ensure loading state is reset on error
+    onError: (err) => {
+      setIsLoading(false);
+      setError("Failed to send message. Please try again.");
+      // Roll back optimistic update
+      queryClient.invalidateQueries(['messages', sessionId]);
+      console.error("Send message error:", err);
     }
   });
 

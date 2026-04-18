@@ -11,6 +11,8 @@ import {
   Settings
 } from "lucide-react";
 import BottomNav from "@/components/layout/BottomNav";
+import PullToRefresh from "@/components/layout/PullToRefresh";
+import { useQueryClient } from "@tanstack/react-query";
 import {
   Sidebar,
   SidebarContent,
@@ -61,6 +63,10 @@ const navigationItems = [
 
 export default function Layout({ children, currentPageName }) {
   const location = useLocation();
+  const queryClient = useQueryClient();
+  const handleRefresh = async () => {
+    await queryClient.invalidateQueries();
+  };
 
   return (
     <SidebarProvider>
@@ -137,14 +143,9 @@ export default function Layout({ children, currentPageName }) {
             </div>
           </header>
 
-          <div
-            className="flex-1 overflow-auto"
-            style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
-          >
-            <div className="pb-20 lg:pb-0">
-              {children}
-            </div>
-          </div>
+          <PullToRefresh onRefresh={handleRefresh}>
+            {children}
+          </PullToRefresh>
         </main>
         <BottomNav />
       </div>

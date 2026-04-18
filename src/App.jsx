@@ -60,9 +60,13 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-  // Force light mode — the app is designed for light theme only
+  // Respect system dark/light preference
   React.useEffect(() => {
-    document.documentElement.classList.remove("dark");
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const applyTheme = (e) => document.documentElement.classList.toggle("dark", e.matches);
+    applyTheme(mq);
+    mq.addEventListener("change", applyTheme);
+    return () => mq.removeEventListener("change", applyTheme);
   }, []);
 
   return (

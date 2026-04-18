@@ -1,13 +1,16 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-// import { useMutation, useQueryClient } from "@tanstack/react-query"; // Removed as useMutation is no longer used
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Loader2, X, Sparkles } from "lucide-react";
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer";
+import { Loader2, X, Sparkles, ChevronDown } from "lucide-react";
+
+function useIsMobile() {
+  return window.innerWidth < 1024;
+}
 
 const TOPICS = [
   // Stage 4
@@ -156,41 +159,105 @@ Return ONLY valid JSON in this exact format:
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Topic — Drawer on mobile, Select on desktop */}
         <div className="space-y-2">
-          <Label htmlFor="topic">Topic</Label>
-          <Select value={topic} onValueChange={setTopic}>
-            <SelectTrigger id="topic">
-              <SelectValue placeholder="Select a topic" />
-            </SelectTrigger>
-            <SelectContent>
-              <div className="px-2 py-1.5 text-sm font-semibold text-gray-500">Stage 4 (Years 7-8)</div>
-              {TOPICS.filter(t => t.stage === 4).map((t) => (
-                <SelectItem key={t.value} value={t.value}>
-                  {t.label}
-                </SelectItem>
-              ))}
-              <div className="px-2 py-1.5 text-sm font-semibold text-gray-500 mt-2">Stage 5 (Years 9-10)</div>
-              {TOPICS.filter(t => t.stage === 5).map((t) => (
-                <SelectItem key={t.value} value={t.value}>
-                  {t.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <Label>Topic</Label>
+          <div className="lg:hidden">
+            <Drawer>
+              <DrawerTrigger asChild>
+                <button className="w-full flex items-center justify-between border rounded-md px-3 py-2 text-sm bg-background text-left">
+                  <span className={topic ? "text-foreground" : "text-muted-foreground"}>
+                    {topic ? TOPICS.find(t => t.value === topic)?.label : "Select a topic"}
+                  </span>
+                  <ChevronDown className="w-4 h-4 opacity-50" />
+                </button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader>
+                  <DrawerTitle>Select a Topic</DrawerTitle>
+                </DrawerHeader>
+                <div className="overflow-y-auto max-h-[60vh] px-4 pb-8 space-y-1">
+                  <p className="text-xs font-semibold text-gray-500 uppercase py-2">Stage 4 (Years 7-8)</p>
+                  {TOPICS.filter(t => t.stage === 4).map((t) => (
+                    <DrawerTrigger asChild key={t.value}>
+                      <button
+                        onClick={() => setTopic(t.value)}
+                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${topic === t.value ? "bg-purple-100 text-purple-700 font-medium" : "hover:bg-gray-100"}`}
+                      >
+                        {t.label}
+                      </button>
+                    </DrawerTrigger>
+                  ))}
+                  <p className="text-xs font-semibold text-gray-500 uppercase pt-4 pb-2">Stage 5 (Years 9-10)</p>
+                  {TOPICS.filter(t => t.stage === 5).map((t) => (
+                    <DrawerTrigger asChild key={t.value}>
+                      <button
+                        onClick={() => setTopic(t.value)}
+                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm transition-colors ${topic === t.value ? "bg-purple-100 text-purple-700 font-medium" : "hover:bg-gray-100"}`}
+                      >
+                        {t.label}
+                      </button>
+                    </DrawerTrigger>
+                  ))}
+                </div>
+              </DrawerContent>
+            </Drawer>
+          </div>
+          <div className="hidden lg:block">
+            <Select value={topic} onValueChange={setTopic}>
+              <SelectTrigger><SelectValue placeholder="Select a topic" /></SelectTrigger>
+              <SelectContent>
+                <div className="px-2 py-1.5 text-sm font-semibold text-gray-500">Stage 4 (Years 7-8)</div>
+                {TOPICS.filter(t => t.stage === 4).map((t) => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+                <div className="px-2 py-1.5 text-sm font-semibold text-gray-500 mt-2">Stage 5 (Years 9-10)</div>
+                {TOPICS.filter(t => t.stage === 5).map((t) => (
+                  <SelectItem key={t.value} value={t.value}>{t.label}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
+        {/* Difficulty — Drawer on mobile, Select on desktop */}
         <div className="space-y-2">
-          <Label htmlFor="difficulty">Difficulty</Label>
-          <Select value={difficulty} onValueChange={setDifficulty}>
-            <SelectTrigger id="difficulty">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="beginner">Beginner</SelectItem>
-              <SelectItem value="intermediate">Intermediate</SelectItem>
-              <SelectItem value="advanced">Advanced</SelectItem>
-            </SelectContent>
-          </Select>
+          <Label>Difficulty</Label>
+          <div className="lg:hidden">
+            <Drawer>
+              <DrawerTrigger asChild>
+                <button className="w-full flex items-center justify-between border rounded-md px-3 py-2 text-sm bg-background text-left">
+                  <span className="capitalize">{difficulty}</span>
+                  <ChevronDown className="w-4 h-4 opacity-50" />
+                </button>
+              </DrawerTrigger>
+              <DrawerContent>
+                <DrawerHeader><DrawerTitle>Select Difficulty</DrawerTitle></DrawerHeader>
+                <div className="px-4 pb-8 space-y-1">
+                  {["beginner", "intermediate", "advanced"].map((d) => (
+                    <DrawerTrigger asChild key={d}>
+                      <button
+                        onClick={() => setDifficulty(d)}
+                        className={`w-full text-left px-3 py-2.5 rounded-lg text-sm capitalize transition-colors ${difficulty === d ? "bg-purple-100 text-purple-700 font-medium" : "hover:bg-gray-100"}`}
+                      >
+                        {d}
+                      </button>
+                    </DrawerTrigger>
+                  ))}
+                </div>
+              </DrawerContent>
+            </Drawer>
+          </div>
+          <div className="hidden lg:block">
+            <Select value={difficulty} onValueChange={setDifficulty}>
+              <SelectTrigger><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="beginner">Beginner</SelectItem>
+                <SelectItem value="intermediate">Intermediate</SelectItem>
+                <SelectItem value="advanced">Advanced</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="space-y-2">

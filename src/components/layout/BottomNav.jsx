@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { LayoutDashboard, MessageSquare, BookOpen, BrainCircuit, Settings } from "lucide-react";
 
 const navItems = [
@@ -12,6 +12,17 @@ const navItems = [
 
 export default function BottomNav() {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleNavClick = (e, item) => {
+    const isActive = location.pathname === item.path ||
+      (item.path !== "/" && location.pathname.startsWith(item.path));
+    if (isActive) {
+      // Already on this tab — reset to root path of that tab
+      e.preventDefault();
+      navigate(item.path, { replace: true });
+    }
+  };
 
   return (
     <nav
@@ -19,12 +30,13 @@ export default function BottomNav() {
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
       {navItems.map((item) => {
-        const isActive = location.pathname === item.path || 
+        const isActive = location.pathname === item.path ||
           (item.path !== "/" && location.pathname.startsWith(item.path));
         return (
           <Link
             key={item.title}
             to={item.path}
+            onClick={(e) => handleNavClick(e, item)}
             className={`flex flex-col items-center gap-1 py-3 px-3 min-w-0 flex-1 transition-colors ${
               isActive ? "text-purple-600" : "text-gray-500"
             }`}
