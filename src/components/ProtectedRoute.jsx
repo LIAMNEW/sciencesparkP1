@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -9,16 +9,10 @@ const DefaultFallback = () => (
   </div>
 );
 
-export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthenticatedElement }) {
-  const { isAuthenticated, isLoadingAuth, authChecked, authError, checkUserAuth } = useAuth();
+export default function ProtectedRoute({ fallback, unauthenticatedElement }) {
+  const { isAuthenticated, isLoadingAuth, authError } = useAuth();
 
-  useEffect(() => {
-    if (!authChecked && !isLoadingAuth) {
-      checkUserAuth();
-    }
-  }, [authChecked, isLoadingAuth, checkUserAuth]);
-
-  if (isLoadingAuth || !authChecked) {
+  if (isLoadingAuth) {
     return fallback;
   }
 
@@ -35,3 +29,13 @@ export default function ProtectedRoute({ fallback = <DefaultFallback />, unauthe
 
   return <Outlet />;
 }
+
+ProtectedRoute.propTypes = {
+  fallback: PropTypes.node,
+  unauthenticatedElement: PropTypes.node,
+};
+
+ProtectedRoute.defaultProps = {
+  fallback: <DefaultFallback />,
+  unauthenticatedElement: null,
+};

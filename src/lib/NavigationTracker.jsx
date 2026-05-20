@@ -10,12 +10,13 @@ export default function NavigationTracker() {
     const { Pages, mainPage } = pagesConfig;
     const mainPageKey = mainPage ?? Object.keys(Pages)[0];
 
-    // Post navigation changes to parent window
+    // Post navigation changes to parent window (restrict to same origin)
     useEffect(() => {
+        const targetOrigin = window.location.origin;
         window.parent?.postMessage({
             type: "app_changed_url",
             url: window.location.href
-        }, '*');
+        }, targetOrigin);
     }, [location]);
 
     // Log user activity when navigating to a page

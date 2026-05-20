@@ -1,5 +1,6 @@
 import React from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { 
   LayoutDashboard, 
@@ -62,6 +63,8 @@ const navigationItems = [
 ];
 
 export default function Layout({ children, currentPageName }) {
+  // currentPageName used by parent routing context
+  void currentPageName;
   const location = useLocation();
   const queryClient = useQueryClient();
   const handleRefresh = async () => {
@@ -142,3 +145,12 @@ export default function Layout({ children, currentPageName }) {
     </SidebarProvider>
   );
 }
+
+Layout.propTypes = {
+  children: PropTypes.node.isRequired,
+  currentPageName: PropTypes.string,
+};
+
+Layout.defaultProps = {
+  currentPageName: "",
+};
