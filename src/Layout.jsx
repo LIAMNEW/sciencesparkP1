@@ -14,6 +14,7 @@ import {
 import BottomNav from "@/components/layout/BottomNav";
 import MobileHeader from "@/components/layout/MobileHeader";
 import PullToRefresh from "@/components/layout/PullToRefresh";
+import ThemeToggle from "@/components/layout/ThemeToggle";
 import { useQueryClient } from "@tanstack/react-query";
 import {
   Sidebar,
@@ -120,14 +121,15 @@ export default function Layout({ children, currentPageName }) {
             </SidebarGroup>
           </SidebarContent>
 
-          <SidebarFooter className="border-t border-purple-100 p-4 bg-gradient-to-r from-purple-50 to-blue-50">
+          <SidebarFooter className="border-t border-purple-100 p-4 bg-gradient-to-r from-purple-50 to-blue-50 dark:bg-none dark:bg-gray-900 space-y-3">
+            <ThemeToggle />
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-gradient-to-br from-purple-400 to-blue-400 rounded-full flex items-center justify-center shadow">
                 <span className="text-white font-bold text-sm">S</span>
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-900 text-sm truncate">Student</p>
-                <p className="text-xs text-gray-600 truncate">Keep learning! 🚀</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">Student</p>
+                <p className="text-xs text-gray-600 dark:text-gray-400 truncate">Keep learning! 🚀</p>
               </div>
             </div>
           </SidebarFooter>

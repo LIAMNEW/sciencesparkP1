@@ -60,13 +60,11 @@ const AuthenticatedApp = () => {
 
 
 function App() {
-  // Respect system dark/light preference
+  // Apply saved theme preference on load
   React.useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const applyTheme = (e) => document.documentElement.classList.toggle("dark", e.matches);
-    applyTheme(mq);
-    mq.addEventListener("change", applyTheme);
-    return () => mq.removeEventListener("change", applyTheme);
+    const stored = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.classList.toggle("dark", stored ? stored === "dark" : prefersDark);
   }, []);
 
   return (
