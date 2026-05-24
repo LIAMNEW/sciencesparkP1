@@ -21,6 +21,28 @@ export default function Settings() {
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
     try {
+      // Delete all associated data first
+      const [chatSessions, quizAttempts, learningProgress] = await Promise.all([
+        base44.entities.ChatSession.filter({ student_id: user.id }),
+        base44.entities.QuizAttempt.filter({ student_id: user.id }),
+        base44.entities.LearningProgress.filter({ student_id: user.id }),
+      ]);
+
+      // Delete chat messages for each session
+      const chatMessageDeletes = chatSessions.map(session =>
+        base44.entities.ChatMessage.filter({ session_id: session.id })
+          .then(msgs => Promise.all(msgs.map(m => base44.entities.ChatMessage.delete(m.id))))
+      );
+      await Promise.all(chatMessageDeletes);
+
+      // Delete all sessions, attempts, progress
+      await Promise.all([
+        ...chatSessions.map(s => base44.entities.ChatSession.delete(s.id)),
+        ...quizAttempts.map(a => base44.entities.QuizAttempt.delete(a.id)),
+        ...learningProgress.map(p => base44.entities.LearningProgress.delete(p.id)),
+      ]);
+
+      // Finally delete the user account
       await base44.entities.User.delete(user.id);
       base44.auth.logout();
     } catch (err) {
@@ -91,7 +113,7 @@ export default function Settings() {
         </CardHeader>
         <CardContent>
           <p className="text-sm text-gray-600 mb-4">
-            Permanently delete your account and all associated data. This action cannot be undone.
+            Permanently deletes your account, all chat history, quiz attempts, and learning progress. This cannot be undone.
           </p>
           <AlertDialog>
             <AlertDialogTrigger asChild>

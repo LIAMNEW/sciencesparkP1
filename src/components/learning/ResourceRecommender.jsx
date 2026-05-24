@@ -13,6 +13,7 @@ import {
   Microscope
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ExternalLinkConfirm from "@/components/ui/ExternalLinkConfirm";
 
 export default function ResourceRecommender({ topic, outcomes = [], studentLevel = "intermediate" }) {
   const [resources, setResources] = useState(null);
@@ -227,38 +228,17 @@ Return ONLY valid JSON in this format:
                   const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${searchQuery}`;
                   
                   return (
-                    <div 
-                      key={index} 
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                        setTimeout(() => {
-                          window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
-                        }, 100);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.open(youtubeSearchUrl, '_blank', 'noopener,noreferrer');
-                        }
-                      }}
-                      className="block p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-2 border-transparent hover:border-red-200"
-                    >
+                    <ExternalLinkConfirm key={index} url={youtubeSearchUrl}
+                      className="block p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors cursor-pointer border-2 border-transparent hover:border-red-200">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-1">{video.title}</h4>
                           <p className="text-sm text-gray-600 mb-2">{video.description}</p>
-                          <Badge variant="outline" className="text-xs">
-                            {video.channel}
-                          </Badge>
+                          <Badge variant="outline" className="text-xs">{video.channel}</Badge>
                         </div>
                         <ExternalLink className="w-5 h-5 text-red-600 flex-shrink-0" />
                       </div>
-                    </div>
+                    </ExternalLinkConfirm>
                   );
                 })}
               </CardContent>
@@ -283,27 +263,8 @@ Return ONLY valid JSON in this format:
                   if (!url) return null;
 
                   return (
-                    <div 
-                      key={index}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                        setTimeout(() => {
-                          window.open(url, '_blank', 'noopener,noreferrer');
-                        }, 100);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.open(url, '_blank', 'noopener,noreferrer');
-                        }
-                      }}
-                      className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border-2 border-transparent hover:border-blue-200"
-                    >
+                    <ExternalLinkConfirm key={index} url={url}
+                      className="block p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors cursor-pointer border-2 border-transparent hover:border-blue-200">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-1">{sim.title}</h4>
@@ -312,7 +273,7 @@ Return ONLY valid JSON in this format:
                         </div>
                         <ExternalLink className="w-5 h-5 text-blue-600 flex-shrink-0" />
                       </div>
-                    </div>
+                    </ExternalLinkConfirm>
                   );
                 })}
               </CardContent>
@@ -336,27 +297,8 @@ Return ONLY valid JSON in this format:
                   if (!url) return null;
 
                   return (
-                    <div 
-                      key={index}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        e.nativeEvent.stopImmediatePropagation();
-                        setTimeout(() => {
-                          window.open(url, '_blank', 'noopener,noreferrer');
-                        }, 100);
-                      }}
-                      role="button"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          window.open(url, '_blank', 'noopener,noreferrer');
-                        }
-                      }}
-                      className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200"
-                    >
+                    <ExternalLinkConfirm key={index} url={url}
+                      className="block p-4 bg-orange-50 rounded-lg hover:bg-orange-100 transition-colors cursor-pointer border-2 border-transparent hover:border-orange-200">
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1">
                           <h4 className="font-semibold text-gray-900 mb-1">{reading.title}</h4>
@@ -367,7 +309,7 @@ Return ONLY valid JSON in this format:
                         </div>
                         <ExternalLink className="w-5 h-5 text-orange-600 flex-shrink-0" />
                       </div>
-                    </div>
+                    </ExternalLinkConfirm>
                   );
                 })}
               </CardContent>
