@@ -2,6 +2,7 @@ import './App.css'
 import React from 'react';
 import Settings from './pages/Settings';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import OnboardingGate from './components/onboarding/OnboardingGate';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -73,8 +74,10 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <NavigationTracker />
-          <AuthenticatedApp />
+          <OnboardingGate>
+            <NavigationTracker />
+            <AuthenticatedApp />
+          </OnboardingGate>
         </Router>
         <Toaster />
         <VisualEditAgent />
