@@ -1,0 +1,72 @@
+{
+  "name": "SyllabusContent",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "topic",
+        "outcome"
+      ],
+      "description": "Whether this record is a topic or an outcome"
+    },
+    "code": {
+      "type": "string",
+      "description": "Outcome code e.g. SC4-WS-01, or topic id e.g. forces"
+    },
+    "title": {
+      "type": "string",
+      "description": "Topic title or outcome name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Description of the topic or outcome"
+    },
+    "stage": {
+      "type": "number",
+      "description": "4 or 5 (Stage 4 = Years 7-8, Stage 5 = Years 9-10)"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "Beginner",
+        "Intermediate",
+        "Advanced"
+      ]
+    },
+    "category": {
+      "type": "string",
+      "description": "e.g. Working Scientifically or Content Focus Area"
+    },
+    "outcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "NESA outcome codes linked to this topic"
+    },
+    "color": {
+      "type": "string",
+      "description": "Tailwind gradient class for the topic card"
+    },
+    "icon_name": {
+      "type": "string",
+      "description": "Lucide icon name for the topic"
+    },
+    "syllabus_version": {
+      "type": "string",
+      "description": "e.g. NSW Science 7-10 2023",
+      "default": "NSW Science 7-10 2023"
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "type",
+    "code",
+    "title",
+    "stage"
+  ]
+}

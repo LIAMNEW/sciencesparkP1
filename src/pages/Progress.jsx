@@ -9,55 +9,11 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import ErrorMessage from "@/components/ui/ErrorMessage";
-
-// NSW Science 7-10 (2023) Syllabus - All Outcomes
-const NESA_OUTCOMES = {
-  // Stage 4 Working Scientifically
-  "SC4-WS-01": "Questioning and predicting",
-  "SC4-WS-02": "Planning investigations",
-  "SC4-WS-03": "Conducting investigations",
-  "SC4-WS-04": "Processing data and information",
-  "SC4-WS-05": "Analysing data and information",
-  "SC4-WS-06": "Problem-solving",
-  "SC4-WS-07": "Communicating",
-  "SC4-WS-08": "Working collaboratively",
-  
-  // Stage 4 Content
-  "SC4-OTU-01": "Observing the Universe",
-  "SC4-FOR-01": "Forces",
-  "SC4-CLS-01": "Cells and Classification",
-  "SC4-SOL-01": "Solutions and Mixtures",
-  "SC4-LIV-01": "Living Systems",
-  "SC4-PRT-01": "Periodic Table and Atomic Structure",
-  "SC4-CHG-01": "Change",
-  "SC4-DA1-01": "Data Science 1",
-  
-  // Stage 5 Working Scientifically
-  "SC5-WS-01": "Questioning and predicting",
-  "SC5-WS-02": "Planning investigations",
-  "SC5-WS-03": "Conducting investigations",
-  "SC5-WS-04": "Processing data and information",
-  "SC5-WS-05": "Analysing data and information",
-  "SC5-WS-06": "Problem-solving",
-  "SC5-WS-07": "Communicating",
-  "SC5-WS-08": "Working collaboratively",
-  
-  // Stage 5 Content
-  "SC5-EGY-01": "Energy",
-  "SC5-DIS-01": "Disease",
-  "SC5-MAT-01": "Materials",
-  "SC5-ENV-01": "Environmental Sustainability",
-  "SC5-GEV-01": "Genetics and Evolutionary Change 1",
-  "SC5-GEV-02": "Genetics and Evolutionary Change 2",
-  "SC5-RXN-01": "Reactions 1",
-  "SC5-RXN-02": "Reactions 2",
-  "SC5-WAM-01": "Waves and Motion 1",
-  "SC5-WAM-02": "Waves and Motion 2",
-  "SC5-DA2-01": "Data Science 2"
-};
+import { useSyllabus } from "@/hooks/useSyllabus";
 
 export default function Progress() {
   const [user, setUser] = React.useState(null);
+  const { outcomesMap: NESA_OUTCOMES, syllabusLoading } = useSyllabus();
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => {});

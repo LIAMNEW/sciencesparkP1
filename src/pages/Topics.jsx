@@ -4,219 +4,34 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Link, useSearchParams } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { 
-  Microscope, 
-  Zap, 
-  Atom, 
-  Mountain, 
-  Telescope,
-  Wind,
-  Droplets,
-  FlaskConical,
-  BarChart3,
-  Dna,
-  Leaf,
-  Recycle,
-  Flame,
-  Waves,
-  Pill,
-  ArrowRight,
-  Sparkles,
-  X
-} from "lucide-react";
+import { ArrowRight, Sparkles, X, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ResourceRecommender from "../components/learning/ResourceRecommender";
-
-// NSW Science 7-10 (2023) Syllabus - Stage 4 and Stage 5 Topics
-const TOPICS = [
-  // STAGE 4 (Years 7-8)
-  {
-    id: "observing-universe",
-    title: "Observing the Universe",
-    description: "Explore how scientific observations increase knowledge of the Universe",
-    icon: Telescope,
-    color: "from-indigo-500 to-purple-600",
-    outcomes: ["SC4-OTU-01", "SC4-WS-01", "SC4-WS-02"],
-    stage: 4,
-    difficulty: "Beginner"
-  },
-  {
-    id: "forces",
-    title: "Forces",
-    description: "Describe contact and non-contact forces, force diagrams and simple machines",
-    icon: Wind,
-    color: "from-orange-500 to-red-600",
-    outcomes: ["SC4-FOR-01", "SC4-WS-03", "SC4-WS-05"],
-    stage: 4,
-    difficulty: "Intermediate"
-  },
-  {
-    id: "cells-classification",
-    title: "Cells and Classification",
-    description: "Cell structures and classification of organisms using scientific conventions",
-    icon: Microscope,
-    color: "from-green-500 to-emerald-600",
-    outcomes: ["SC4-CLS-01", "SC4-WS-01", "SC4-WS-06"],
-    stage: 4,
-    difficulty: "Beginner"
-  },
-  {
-    id: "solutions-mixtures",
-    title: "Solutions and Mixtures",
-    description: "Properties of substances and separation techniques",
-    icon: Droplets,
-    color: "from-blue-500 to-cyan-600",
-    outcomes: ["SC4-SOL-01", "SC4-WS-02", "SC4-WS-04"],
-    stage: 4,
-    difficulty: "Beginner"
-  },
-  {
-    id: "living-systems",
-    title: "Living Systems",
-    description: "Body systems, plant systems and ecosystems",
-    icon: Leaf,
-    color: "from-lime-500 to-green-600",
-    outcomes: ["SC4-LIV-01", "SC4-WS-03", "SC4-WS-04"],
-    stage: 4,
-    difficulty: "Intermediate"
-  },
-  {
-    id: "periodic-table",
-    title: "Periodic Table & Atomic Structure",
-    description: "Elements, compounds and atomic models",
-    icon: Atom,
-    color: "from-purple-500 to-pink-600",
-    outcomes: ["SC4-PRT-01", "SC4-WS-01", "SC4-WS-07"],
-    stage: 4,
-    difficulty: "Intermediate"
-  },
-  {
-    id: "change",
-    title: "Change",
-    description: "Energy causes geological and chemical change",
-    icon: Mountain,
-    color: "from-amber-500 to-orange-600",
-    outcomes: ["SC4-CHG-01", "SC4-WS-04", "SC4-WS-05"],
-    stage: 4,
-    difficulty: "Intermediate"
-  },
-  {
-    id: "data-science-1",
-    title: "Data Science 1",
-    description: "Using data to model and predict phenomena",
-    icon: BarChart3,
-    color: "from-teal-500 to-cyan-600",
-    outcomes: ["SC4-DA1-01", "SC4-WS-04", "SC4-WS-07"],
-    stage: 4,
-    difficulty: "Beginner"
-  },
-  
-  // STAGE 5 (Years 9-10)
-  {
-    id: "energy",
-    title: "Energy",
-    description: "Energy sources, conservation of energy and electrical circuits",
-    icon: Zap,
-    color: "from-yellow-500 to-orange-600",
-    outcomes: ["SC5-EGY-01", "SC5-WS-04", "SC5-WS-06"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "disease",
-    title: "Disease",
-    description: "Causes of disease, prevention and management",
-    icon: Pill,
-    color: "from-red-500 to-pink-600",
-    outcomes: ["SC5-DIS-01", "SC5-WS-04", "SC5-WS-06"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "materials",
-    title: "Materials",
-    description: "Chemical properties, bonding and polymers",
-    icon: FlaskConical,
-    color: "from-slate-500 to-gray-600",
-    outcomes: ["SC5-MAT-01", "SC5-WS-02", "SC5-WS-03"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "environmental-sustainability",
-    title: "Environmental Sustainability",
-    description: "Climate science, human impacts and recycling",
-    icon: Recycle,
-    color: "from-green-500 to-teal-600",
-    outcomes: ["SC5-ENV-01", "SC5-WS-05", "SC5-WS-06"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "genetics",
-    title: "Genetics & Evolutionary Change",
-    description: "DNA, inheritance and natural selection",
-    icon: Dna,
-    color: "from-violet-500 to-purple-600",
-    outcomes: ["SC5-GEV-01", "SC5-GEV-02", "SC5-WS-04"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "reactions",
-    title: "Reactions",
-    description: "Chemical and nuclear reactions",
-    icon: Flame,
-    color: "from-orange-500 to-red-600",
-    outcomes: ["SC5-RXN-01", "SC5-RXN-02", "SC5-WS-03"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "waves-motion",
-    title: "Waves and Motion",
-    description: "Properties of waves and Newton's laws of motion",
-    icon: Waves,
-    color: "from-blue-500 to-indigo-600",
-    outcomes: ["SC5-WAM-01", "SC5-WAM-02", "SC5-WS-04"],
-    stage: 5,
-    difficulty: "Advanced"
-  },
-  {
-    id: "data-science-2",
-    title: "Data Science 2",
-    description: "Evidence-based decisions and scientific claims",
-    icon: BarChart3,
-    color: "from-cyan-500 to-blue-600",
-    outcomes: ["SC5-DA2-01", "SC5-WS-07", "SC5-WS-08"],
-    stage: 5,
-    difficulty: "Advanced"
-  }
-];
+import { useSyllabus } from "@/hooks/useSyllabus";
 
 export default function Topics() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [selectedStage, setSelectedStage] = useState("all");
-  
+  const { topics: TOPICS, syllabusLoading } = useSyllabus();
+
   // Sync with local storage for persistence across reloads
   useEffect(() => {
     const savedTopicId = localStorage.getItem("current_topic_id");
     const urlTopicId = searchParams.get("topic");
     
     if (!urlTopicId && savedTopicId) {
-      // Restore from storage if URL param is missing (e.g. after reload/back navigation)
       setSearchParams({ topic: savedTopicId });
     }
   }, []);
 
   const topicId = searchParams.get("topic");
-  const selectedTopic = topicId ? TOPICS.find(t => t.id === topicId) || null : null;
+  const selectedTopic = topicId ? TOPICS.find(t => t.code === topicId) || null : null;
 
   const setSelectedTopic = (topic) => {
     if (topic) {
-      localStorage.setItem("current_topic_id", topic.id);
-      setSearchParams({ topic: topic.id });
+      localStorage.setItem("current_topic_id", topic.code);
+      setSearchParams({ topic: topic.code });
     } else {
       localStorage.removeItem("current_topic_id");
       setSearchParams({});
@@ -228,6 +43,15 @@ export default function Topics() {
     const stageMatch = selectedStage === "all" || t.stage === parseInt(selectedStage);
     return difficultyMatch && stageMatch;
   });
+
+  if (syllabusLoading && TOPICS.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+        <span className="ml-3 text-gray-600">Loading syllabus...</span>
+      </div>
+    );
+  }
 
   if (selectedTopic) {
     return (
@@ -253,7 +77,7 @@ export default function Topics() {
             ))}
           </div>
           <div className="flex gap-2 mb-6">
-            <Link to={createPageUrl(`Chat?topic=${selectedTopic.id}`)}>
+            <Link to={createPageUrl(`Chat?topic=${selectedTopic.code}`)}>
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                 Ask AI Tutor
               </Button>
@@ -376,7 +200,7 @@ export default function Topics() {
                     <Sparkles className="w-4 h-4 mr-2" />
                     Resources
                   </Button>
-                  <Link to={createPageUrl(`Chat?topic=${topic.id}`)} className="flex-1">
+                  <Link to={createPageUrl(`Chat?topic=${topic.code}`)} className="flex-1">
                     <Button className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
                       Learn
                       <ArrowRight className="w-4 h-4 ml-2" />

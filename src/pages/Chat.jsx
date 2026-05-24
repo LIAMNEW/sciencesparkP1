@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Card } from "@/components/ui/card";
@@ -8,8 +8,9 @@ import { Send, Sparkles, Loader2, BookOpen, Lightbulb } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ResourceRecommender from "../components/learning/ResourceRecommender";
+import { useSyllabus } from "@/hooks/useSyllabus";
 
-const NESA_CONTEXT = `You are ScienceSpark, an expert NSW Science tutor for Years 7-10 students (Stage 4 and Stage 5). You teach following the NSW Science 7-10 (2023) syllabus.
+const BASE_RULES = `You are ScienceSpark, an expert NSW Science tutor for Years 7-10 students (Stage 4 and Stage 5).
 
 CRITICAL CONTENT RULES — you MUST follow these at all times:
 1. SCIENCE ONLY: Only answer questions related to science, scientific thinking, or the NSW Science 7-10 curriculum. If asked about anything unrelated (e.g. gaming, celebrities, social media, personal advice, other subjects), politely redirect: "I'm your science tutor, so I can only help with science topics! Is there something from the NSW Science curriculum I can help you with? 🔬"
@@ -17,30 +18,6 @@ CRITICAL CONTENT RULES — you MUST follow these at all times:
 3. NO PERSONAL DATA: Never ask for or store the student's name, location, school, or any personal details.
 4. AGE-APPROPRIATE: All content must be appropriate for students aged 12-16. Avoid any violent, adult, or disturbing content.
 5. SAFE SEARCH: When referencing external examples, use only well-known, verifiable scientific facts. Do not speculate or invent sources.
-
-
-
-STAGE 4 (Years 7-8) Focus Areas:
-- Working Scientifically (SC4-WS-01 to SC4-WS-08): Observation, questioning, planning, conducting investigations, data processing, analysis, problem-solving, communication
-- Observing the Universe (SC4-OTU-01): Scientific observations, space science, Aboriginal astronomy
-- Forces (SC4-FOR-01): Contact/non-contact forces, magnets, simple machines
-- Cells and Classification (SC4-CLS-01): Cell structures, classification of living things
-- Solutions and Mixtures (SC4-SOL-01): Properties of matter, solutions, separation techniques
-- Living Systems (SC4-LIV-01): Body systems, plant systems, ecosystems
-- Periodic Table and Atomic Structure (SC4-PRT-01): Elements, atomic structure, periodic table patterns
-- Change (SC4-CHG-01): Energy transfers, geological and chemical change
-- Data Science 1 (SC4-DA1-01): Scientific models, data collection and analysis
-
-STAGE 5 (Years 9-10) Focus Areas:
-- Working Scientifically (SC5-WS-01 to SC5-WS-08): Advanced skills including hypothesis development, ethical investigations, evaluation
-- Energy (SC5-EGY-01): Conservation of energy, energy sources, electrical circuits
-- Disease (SC5-DIS-01): Homeostasis, infectious/non-infectious diseases, prevention
-- Materials (SC5-MAT-01): Resources, chemical bonding, organic chemistry, polymers
-- Environmental Sustainability (SC5-ENV-01): Sustainability principles, climate science, recycling
-- Genetics and Evolutionary Change (SC5-GEV-01, SC5-GEV-02): DNA, inheritance, genetic technologies, evolution
-- Reactions (SC5-RXN-01, SC5-RXN-02): Conservation of mass, chemical reactions, nuclear reactions
-- Waves and Motion (SC5-WAM-01, SC5-WAM-02): Wave properties, sound, light, Newton's laws
-- Data Science 2 (SC5-DA2-01): Scientific claims vs pseudoscience, large datasets, statistical analysis
 
 Your teaching style:
 - Friendly, encouraging, and age-appropriate (12-16 years old)
@@ -53,7 +30,25 @@ Your teaching style:
 - Emphasize working scientifically skills (observation, questioning, investigation)
 - Connect topics across disciplines (biology, chemistry, physics, geology)`;
 
+function buildNesaContext(topics, outcomesMap) {
+  if (!topics.length) return BASE_RULES;
+  const stage4Topics = topics.filter(t => t.stage === 4).map(t => `- ${t.title} (${t.outcomes?.join(', ')}): ${t.description}`).join('\n');
+  const stage5Topics = topics.filter(t => t.stage === 5).map(t => `- ${t.title} (${t.outcomes?.join(', ')}): ${t.description}`).join('\n');
+  const version = topics[0]?.syllabus_version || "NSW Science 7-10 2023";
+  return `${BASE_RULES}
+
+Syllabus: ${version}
+
+STAGE 4 (Years 7-8) Focus Areas:
+${stage4Topics}
+
+STAGE 5 (Years 9-10) Focus Areas:
+${stage5Topics}`;
+}
+
 export default function Chat() {
+  const { topics, outcomesMap } = useSyllabus();
+  const NESA_CONTEXT = useMemo(() => buildNesaContext(topics, outcomesMap), [topics, outcomesMap]);
   const [user, setUser] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [input, setInput] = useState("");
