@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
@@ -17,6 +17,7 @@ import {
   WifiOff
 } from "lucide-react";
 import { motion } from "framer-motion";
+import OutcomesDashboard from "@/components/dashboard/OutcomesDashboard";
 
 export default function Dashboard() {
   const [user, setUser] = React.useState(null);
@@ -38,6 +39,18 @@ export default function Dashboard() {
     enabled: !!user,
     initialData: []
   });
+
+  const { data: learningProgressRecords = [] } = useQuery({
+    queryKey: ['learningProgress', user?.id],
+    queryFn: () => base44.entities.LearningProgress.filter({ student_id: user?.id }),
+    enabled: !!user,
+    initialData: []
+  });
+
+  // Build a map { outcomeCode: masteryLevel }
+  const learningProgressMap = React.useMemo(() => {
+    return Object.fromEntries(learningProgressRecords.map(r => [r.nesa_outcome, r.mastery_level]));
+  }, [learningProgressRecords]);
 
   const stats = {
     totalChats: recentSessions.length,
@@ -156,6 +169,11 @@ export default function Dashboard() {
             </motion.div>
           ))}
         </div>
+      </div>
+
+      {/* Syllabus Outcomes */}
+      <div className="mb-8">
+        <OutcomesDashboard learningProgress={learningProgressMap} />
       </div>
 
       {/* Recent Activity */}
