@@ -89,7 +89,7 @@ export default function Progress() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Your Progress</h1>
-            <p className="text-gray-600">NSW Science 7-10 (2023) Syllabus Coverage</p>
+            <p className="text-gray-600">NSW Science 7–10 (2023) — Implementing 2026</p>
           </div>
         </div>
         <div className="text-center py-16 bg-white rounded-3xl shadow-md">
@@ -133,7 +133,7 @@ export default function Progress() {
           </div>
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Your Progress</h1>
-            <p className="text-gray-600">NSW Science 7-10 (2023) Syllabus Coverage</p>
+            <p className="text-gray-600">NSW Science 7–10 (2023) — Implementing 2026</p>
           </div>
         </div>
 

@@ -159,7 +159,7 @@ export default function OutcomesDashboard({ learningProgress = {} }) {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold text-gray-900">NSW Syllabus Outcomes</h2>
-          <p className="text-sm text-gray-500 mt-1">NSW Science 7-10 (2023) — track your mastery across all outcomes</p>
+          <p className="text-sm text-gray-500 mt-1">NSW Science 7–10 (2023) — Implementing 2026 — track your mastery across all outcomes</p>
         </div>
         <Link to="/Quizzes">
           <Button variant="outline" size="sm" className="gap-2">
