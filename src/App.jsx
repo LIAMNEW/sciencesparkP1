@@ -39,9 +39,28 @@ const AuthenticatedApp = () => {
     if (authError.type === 'user_not_registered') {
       return <UserNotRegisteredError />;
     } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
       navigateToLogin();
       return null;
+    } else if (authError.type === 'unknown') {
+      return (
+        <div className="fixed inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 p-6">
+          <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-8 h-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M12 3a9 9 0 100 18A9 9 0 0012 3z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-gray-800 mb-2">Connection Problem</h2>
+          <p className="text-gray-500 text-sm text-center max-w-xs mb-6">
+            We couldn't connect to ScienceSpark. Please check your internet connection and try again.
+          </p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-xl font-semibold shadow-lg hover:opacity-90 transition-opacity"
+          >
+            Try Again
+          </button>
+        </div>
+      );
     }
   }
 

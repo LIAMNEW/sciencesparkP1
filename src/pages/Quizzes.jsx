@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,6 +14,7 @@ import {
   Sparkles
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import ErrorMessage from "@/components/ui/ErrorMessage";
 
 import QuizCreator from "../components/quiz/QuizCreator";
 import QuizTaker from "../components/quiz/QuizTaker";
@@ -31,7 +31,7 @@ export default function Quizzes() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const { data: quizzes = [] } = useQuery({
+  const { data: quizzes = [], isError: quizzesError, refetch: refetchQuizzes } = useQuery({
     queryKey: ['quizzes'],
     queryFn: () => base44.entities.Quiz.list('-created_date'),
     initialData: []
@@ -80,6 +80,17 @@ export default function Quizzes() {
       ? Math.round(myAttempts.reduce((sum, a) => sum + a.score, 0) / myAttempts.length)
       : 0
   };
+
+  if (quizzesError) {
+    return (
+      <div className="p-6 md:p-8 max-w-7xl mx-auto">
+        <ErrorMessage
+          message="We couldn't load the quizzes. Please check your connection and try again."
+          onRetry={refetchQuizzes}
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6 md:p-8 max-w-7xl mx-auto">

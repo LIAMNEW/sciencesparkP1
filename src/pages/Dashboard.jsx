@@ -13,7 +13,8 @@ import {
   TrendingUp,
   Sparkles,
   ArrowRight,
-  Clock
+  Clock,
+  WifiOff
 } from "lucide-react";
 import { motion } from "framer-motion";
 
@@ -24,14 +25,14 @@ export default function Dashboard() {
     base44.auth.me().then(setUser).catch(() => {});
   }, []);
 
-  const { data: recentSessions = [] } = useQuery({
+  const { data: recentSessions = [], isError: sessionsError, refetch: refetchSessions } = useQuery({
     queryKey: ['recentSessions', user?.id],
     queryFn: () => base44.entities.ChatSession.filter({ student_id: user?.id }, '-created_date', 3),
     enabled: !!user,
     initialData: []
   });
 
-  const { data: recentAttempts = [] } = useQuery({
+  const { data: recentAttempts = [], isError: attemptsError, refetch: refetchAttempts } = useQuery({
     queryKey: ['recentAttempts', user?.id],
     queryFn: () => base44.entities.QuizAttempt.filter({ student_id: user?.id }, '-created_date', 5),
     enabled: !!user,
@@ -168,7 +169,12 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {recentSessions.length > 0 ? (
+            {sessionsError ? (
+              <div className="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 rounded-lg p-3">
+                <WifiOff className="w-4 h-4 flex-shrink-0" />
+                <span>Couldn't load conversations. <button onClick={refetchSessions} className="underline font-medium">Retry</button></span>
+              </div>
+            ) : recentSessions.length > 0 ? (
               <div className="space-y-3">
                 {recentSessions.map((session) => (
                   <Link key={session.id} to={createPageUrl(`Chat?session=${session.id}`)}>
@@ -187,6 +193,7 @@ export default function Dashboard() {
                 <p className="text-sm mt-1">Start chatting with your AI tutor!</p>
               </div>
             )}
+            
           </CardContent>
         </Card>
 
@@ -199,7 +206,12 @@ export default function Dashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {recentAttempts.length > 0 ? (
+            {attemptsError ? (
+              <div className="flex items-center gap-2 text-sm text-orange-600 bg-orange-50 rounded-lg p-3">
+                <WifiOff className="w-4 h-4 flex-shrink-0" />
+                <span>Couldn't load quiz results. <button onClick={refetchAttempts} className="underline font-medium">Retry</button></span>
+              </div>
+            ) : recentAttempts.length > 0 ? (
               <div className="space-y-3">
                 {recentAttempts.map((attempt) => (
                   <div key={attempt.id} className="p-4 bg-blue-50 rounded-xl">
@@ -224,6 +236,7 @@ export default function Dashboard() {
                 <p className="text-sm mt-1">Test your knowledge!</p>
               </div>
             )}
+
           </CardContent>
         </Card>
       </div>

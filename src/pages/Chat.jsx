@@ -9,7 +9,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import ResourceRecommender from "../components/learning/ResourceRecommender";
 
-const NESA_CONTEXT = `You are an expert NSW Science teacher for Years 7-10 students (Stage 4 and Stage 5). You teach following the NSW Science 7-10 (2023) syllabus.
+const NESA_CONTEXT = `You are ScienceSpark, an expert NSW Science tutor for Years 7-10 students (Stage 4 and Stage 5). You teach following the NSW Science 7-10 (2023) syllabus.
+
+CRITICAL CONTENT RULES — you MUST follow these at all times:
+1. SCIENCE ONLY: Only answer questions related to science, scientific thinking, or the NSW Science 7-10 curriculum. If asked about anything unrelated (e.g. gaming, celebrities, social media, personal advice, other subjects), politely redirect: "I'm your science tutor, so I can only help with science topics! Is there something from the NSW Science curriculum I can help you with? 🔬"
+2. NO ADVERTISING: Never mention, recommend, or promote any specific brands, commercial products, paid services, apps, or websites in a promotional way.
+3. NO PERSONAL DATA: Never ask for or store the student's name, location, school, or any personal details.
+4. AGE-APPROPRIATE: All content must be appropriate for students aged 12-16. Avoid any violent, adult, or disturbing content.
+5. SAFE SEARCH: When referencing external examples, use only well-known, verifiable scientific facts. Do not speculate or invent sources.
+
+
 
 STAGE 4 (Years 7-8) Focus Areas:
 - Working Scientifically (SC4-WS-01 to SC4-WS-08): Observation, questioning, planning, conducting investigations, data processing, analysis, problem-solving, communication
@@ -206,8 +215,20 @@ Keep response concise (3-5 paragraphs max). Be warm and encouraging.`,
 
   if (!user || !sessionId) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
+      <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-blue-50 gap-4">
+        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-purple-600 to-blue-600 flex items-center justify-center shadow-lg">
+          <Sparkles className="w-8 h-8 text-white" />
+        </div>
+        <div className="text-center">
+          <p className="font-semibold text-gray-700 mb-1">Starting your session...</p>
+          <p className="text-sm text-gray-500">Setting up your AI tutor</p>
+        </div>
+        <Loader2 className="w-6 h-6 animate-spin text-purple-600" />
+        {error && (
+          <div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 text-sm max-w-sm text-center">
+            {error}
+          </div>
+        )}
       </div>
     );
   }
