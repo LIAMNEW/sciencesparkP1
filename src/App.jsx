@@ -1,6 +1,7 @@
 import './App.css'
 import React from 'react';
 import Settings from './pages/Settings';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import { Toaster } from "@/components/ui/toaster"
 import { QueryClientProvider } from '@tanstack/react-query'
 import { queryClientInstance } from '@/lib/query-client'
@@ -52,6 +53,7 @@ const AuthenticatedApp = () => {
           <Route key={path} path={`/${path}`} element={<Page />} />
         ))}
         <Route path="/Settings" element={<LayoutWrapper currentPageName="Settings"><Settings /></LayoutWrapper>} />
+        <Route path="/PrivacyPolicy" element={<LayoutWrapper currentPageName="PrivacyPolicy"><PrivacyPolicy /></LayoutWrapper>} />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </LayoutWrapper>

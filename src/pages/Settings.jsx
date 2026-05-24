@@ -3,7 +3,8 @@ import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Settings as SettingsIcon, Trash2, LogOut, User } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Settings as SettingsIcon, Trash2, LogOut, User, Shield } from "lucide-react";
 
 export default function Settings() {
   const [user, setUser] = React.useState(null);
@@ -59,6 +60,24 @@ export default function Settings() {
             <LogOut className="w-4 h-4" />
             Log Out
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Privacy & Legal */}
+      <Card className="border-none shadow-md mb-4">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-base">
+            <Shield className="w-4 h-4 text-purple-600" />
+            Privacy & Legal
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Link to="/PrivacyPolicy">
+            <Button variant="outline" className="w-full flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              View Privacy Policy
+            </Button>
+          </Link>
         </CardContent>
       </Card>
 
