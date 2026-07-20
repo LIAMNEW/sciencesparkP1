@@ -1,0 +1,36 @@
+{
+  "name": "LearningProgress",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "Reference to user ID"
+    },
+    "nesa_outcome": {
+      "type": "string",
+      "description": "NESA outcome code"
+    },
+    "outcome_name": {
+      "type": "string",
+      "description": "Outcome description"
+    },
+    "mastery_level": {
+      "type": "number",
+      "description": "Mastery percentage 0-100",
+      "default": 0
+    },
+    "last_practiced": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Last time this outcome was practiced"
+    },
+    "activities_completed": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "student_id",
+    "nesa_outcome"
+  ]
+}

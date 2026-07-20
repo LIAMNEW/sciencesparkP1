@@ -1,0 +1,29 @@
+{
+  "name": "ChatSession",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "Reference to user ID"
+    },
+    "topic": {
+      "type": "string",
+      "description": "Main science topic discussed"
+    },
+    "title": {
+      "type": "string",
+      "description": "Session title"
+    },
+    "last_message": {
+      "type": "string",
+      "description": "Preview of last message"
+    },
+    "message_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "student_id"
+  ]
+}

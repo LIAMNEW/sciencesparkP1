@@ -24,18 +24,22 @@ const fetchSyllabusContent = async () => {
 };
 
 export function useSyllabus() {
-  const { data, isLoading, isError, refetch } = useQuery({
+  const { data, isLoading, isFetching, isError, refetch } = useQuery({
     queryKey: ['syllabus'],
     queryFn: fetchSyllabusContent,
     staleTime: 1000 * 60 * 10, // Cache for 10 minutes
     initialData: { topics: [], outcomes: [], outcomesMap: {} }
   });
 
+  // Show "loading" on first fetch (initialData makes isLoading false, so we
+  // also check isFetching when there's no real data yet)
+  const hasNoData = !data || (data.topics && data.topics.length === 0);
+
   return {
     topics: data.topics,
     outcomes: data.outcomes,
     outcomesMap: data.outcomesMap,
-    syllabusLoading: isLoading,
+    syllabusLoading: isLoading || (isFetching && hasNoData),
     syllabusError: isError,
     refetchSyllabus: refetch
   };

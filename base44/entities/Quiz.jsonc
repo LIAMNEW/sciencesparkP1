@@ -1,0 +1,58 @@
+{
+  "name": "Quiz",
+  "type": "object",
+  "properties": {
+    "topic": {
+      "type": "string",
+      "description": "Science topic"
+    },
+    "title": {
+      "type": "string",
+      "description": "Quiz title"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": [
+        "beginner",
+        "intermediate",
+        "advanced"
+      ],
+      "default": "intermediate"
+    },
+    "nesa_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "NESA outcome codes"
+    },
+    "questions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "question": {
+            "type": "string"
+          },
+          "options": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "correct_answer": {
+            "type": "number"
+          },
+          "explanation": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "topic",
+    "title",
+    "questions"
+  ]
+}

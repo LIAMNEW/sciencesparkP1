@@ -1,0 +1,35 @@
+{
+  "name": "QuizAttempt",
+  "type": "object",
+  "properties": {
+    "student_id": {
+      "type": "string",
+      "description": "Reference to user ID"
+    },
+    "quiz_id": {
+      "type": "string",
+      "description": "Reference to Quiz"
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "description": "Student answers"
+    },
+    "score": {
+      "type": "number",
+      "description": "Percentage score"
+    },
+    "passed": {
+      "type": "boolean",
+      "description": "Whether student passed (70%+)"
+    }
+  },
+  "required": [
+    "student_id",
+    "quiz_id",
+    "answers",
+    "score"
+  ]
+}
