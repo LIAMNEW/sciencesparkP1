@@ -68,5 +68,8 @@
     "code",
     "title",
     "stage"
-  ]
+  ],
+  "rls": {
+    "read": true
+  }
 }
