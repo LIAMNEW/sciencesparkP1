@@ -13,7 +13,7 @@ export default function Topics() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedDifficulty, setSelectedDifficulty] = useState("all");
   const [selectedStage, setSelectedStage] = useState("all");
-  const { topics: TOPICS, syllabusLoading } = useSyllabus();
+  const { topics: TOPICS, syllabusLoading, syllabusError, syllabusErrorMessage, refetchSyllabus } = useSyllabus();
 
   // Sync with local storage for persistence across reloads
   useEffect(() => {
@@ -49,6 +49,26 @@ export default function Topics() {
       <div className="flex items-center justify-center h-64">
         <Loader2 className="w-8 h-8 animate-spin text-purple-600" />
         <span className="ml-3 text-gray-600">Loading syllabus...</span>
+      </div>
+    );
+  }
+
+  if (syllabusError && TOPICS.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center px-6">
+        <p className="text-lg font-semibold text-gray-900 mb-1">Couldn't load topics</p>
+        <p className="text-sm text-gray-500 mb-4 max-w-md">{syllabusErrorMessage || "There was a problem fetching the syllabus."}</p>
+        <Button variant="outline" onClick={() => refetchSyllabus()}>Try again</Button>
+      </div>
+    );
+  }
+
+  if (!syllabusLoading && !syllabusError && TOPICS.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-center px-6">
+        <p className="text-lg font-semibold text-gray-900 mb-1">No topics found</p>
+        <p className="text-sm text-gray-500 mb-4">The syllabus content hasn't been loaded yet.</p>
+        <Button variant="outline" onClick={() => refetchSyllabus()}>Reload syllabus</Button>
       </div>
     );
   }
